@@ -50,6 +50,7 @@ public class ConnectionManagerInstance {
 			conn.setDoOutput(true);
 			conn.setRequestMethod(method);
 			conn.setRequestProperty("User-Agent","Mozilla/4.7 [en] (Win98; I)");
+			conn.setRequestProperty("Accept-Charset", "GB2312");
 			//如果cookieValue里的值不为空时，说明之前登录过了，此时只需要把上次记录的COOKIE放到此次登录中就行, 反之则需要直接登录
 			String username=SharePreferencesUtils.getString(Constants.USERNAME,"guest");
 			if(cookieValue.length()==0 && !"guest".equals(username)) {
@@ -61,7 +62,6 @@ public class ConnectionManagerInstance {
 			}else if(cookieValue.length()!=0){
 				conn.setRequestProperty("Cookie", cookieValue);
 			}
-			conn.setRequestProperty("Accept-Charset", "GB2312");
 			//开始连接服务器
 			conn.connect();
 			//说明并没有保存登录后的cookie，把登录后的cookie保存下来，供下次连接使用

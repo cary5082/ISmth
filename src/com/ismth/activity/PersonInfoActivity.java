@@ -23,6 +23,9 @@ public class PersonInfoActivity extends Activity{
 	EditText username;
 	//密码
 	EditText password;
+	String oldUserName;
+	String oldPassword;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +33,16 @@ public class PersonInfoActivity extends Activity{
 		setContentView(R.layout.person_info);
 		username=(EditText)findViewById(R.id.username);
 		password=(EditText)findViewById(R.id.password);
+		oldUserName=SharePreferencesUtils.getString(Constants.USERNAME, "");
+		oldPassword=SharePreferencesUtils.getString(Constants.PASSWORD, "");
+		username.setText(oldUserName);
+		password.setText(oldPassword);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		//监听回退按钮事件，如果当前用户名，密码发生改变提示用户是否保存。
 		if(keyCode==KeyEvent.KEYCODE_BACK) {
-			String oldUserName=SharePreferencesUtils.getString(Constants.USERNAME, "");
-			String oldPassword=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 			if(!"".equals(username.getText().toString()) && !"".equals(password.getText().toString())) {
 				//当用户名框和密码框和原有系统存的发生变化，则提示用户是否保存
 				if(!oldUserName.equals(username) || !oldPassword.equals(password)) {
