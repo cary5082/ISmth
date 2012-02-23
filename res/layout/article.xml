@@ -9,19 +9,28 @@
     			  android:layout_width="wrap_content"
     			  android:layout_height="wrap_content"
     			  android:orientation="horizontal">
-    	<Button android:id="@+id/reply"
+    	<TextView android:id="@+id/reply"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
         	    android:textColor="@color/text_color"
+        	    android:layout_marginRight="8dp"
         	    android:text="查看回帖"/>
     	
-    	<Button android:id="@+id/add_article"
+    	<TextView android:id="@+id/add_article"
     	    	android:layout_width="wrap_content"
     	    	android:layout_height="wrap_content"
     	    	android:textColor="@color/text_color"
+    	    	android:layout_marginRight="8dp"
     	    	android:text="回复"/>
     </LinearLayout>
     
+    <LinearLayout
+        android:id="@+id/topbarline"
+        android:layout_below="@id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="5px"
+        android:background="@drawable/devideline_fafafa"/>
+        
     <ScrollView android:id="@+id/scroll"
         		android:layout_width="fill_parent"
         		android:layout_height="wrap_content">

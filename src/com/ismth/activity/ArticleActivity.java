@@ -58,6 +58,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	
 	LinearLayout linearLayout;
 	
+	LinearLayout topbarline;
+	
 	
 	public Handler handler=new Handler(){
 		@Override
@@ -105,6 +107,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery.setOnItemClickListener(this);
 		gallery.setOnItemSelectedListener(this);
 		linearLayout=(LinearLayout)findViewById(R.id.topbar);
+		topbarline=(LinearLayout)findViewById(R.id.topbarline);
 		process();
 	}
 
@@ -218,6 +221,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		article.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
 		linearLayout.setVisibility(View.GONE);
+		topbarline.setVisibility(View.GONE);
 	}
 	
 	/**
@@ -313,6 +317,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				gallery.setVisibility(View.VISIBLE);
 				scroll.setVisibility(View.VISIBLE);
 				linearLayout.setVisibility(View.VISIBLE);
+				topbarline.setVisibility(View.VISIBLE);
 				showBigPicFlag=false;
 				bigBitmap.recycle();
 				bigBitmap=null;
