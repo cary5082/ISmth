@@ -200,4 +200,8 @@ public class SmthUtils {
 		}
 		return b;
 	}
+	
+	public static String getTitleForHtml(String html) {
+		return html.substring(html.indexOf("]")+1, html.length());
+	}
 }

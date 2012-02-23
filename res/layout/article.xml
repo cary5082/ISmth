@@ -5,11 +5,22 @@
     android:orientation="vertical" 
     android:background="@drawable/loading_bg">
     
-    <TextView android:id="@+id/reply"
-        	  android:layout_width="wrap_content"
-        	  android:layout_height="wrap_content"
-        	  android:textColor="@color/text_color"
-        	  android:text="查看回帖"/>
+    <LinearLayout android:id="@+id/topbar"
+    			  android:layout_width="wrap_content"
+    			  android:layout_height="wrap_content"
+    			  android:orientation="horizontal">
+    	<Button android:id="@+id/reply"
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+        	    android:textColor="@color/text_color"
+        	    android:text="查看回帖"/>
+    	
+    	<Button android:id="@+id/add_article"
+    	    	android:layout_width="wrap_content"
+    	    	android:layout_height="wrap_content"
+    	    	android:textColor="@color/text_color"
+    	    	android:text="回复"/>
+    </LinearLayout>
     
     <ScrollView android:id="@+id/scroll"
         		android:layout_width="fill_parent"

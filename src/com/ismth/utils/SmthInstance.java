@@ -74,4 +74,11 @@ public class SmthInstance {
 	public boolean containsKeyForPicMap(int key) {
 		return picMap.containsKey(key);
 	}
+	
+	/**
+	 * 销毁MAP
+	 */
+	public void destroyPicMap() {
+		picMap=null;
+	}
 }

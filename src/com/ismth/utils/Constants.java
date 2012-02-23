@@ -41,6 +41,8 @@ public class Constants {
 	
 	public static final String BIDURLKEY="bidUrlKey";
 	
+	public static final String TITLEBAR="titlebar";
+	
 	public static final String IDKEY="idKey";
 	//有附件
 	public static final int ATTACH=1;

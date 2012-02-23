@@ -32,8 +32,11 @@ import android.widget.TextView;
 import com.ismth.adapter.TodayHotAdapter;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
+import com.ismth.utils.ConnectionManagerInstance;
 import com.ismth.utils.Constants;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SharePreferencesUtils;
+import com.ismth.utils.SmthInstance;
 
 public class ISmthActivity extends Activity implements OnItemClickListener{
 	
@@ -123,14 +126,18 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
     public void setListViewByTodayHot(List<TodayHotBean> list) {
     	todayHotAdapter=new TodayHotAdapter(this,list);
 		listView.setAdapter(todayHotAdapter);
+		list=null;
+		todayHotAdapter=null;
     }
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
 		Intent intent=new Intent(this,ArticleActivity.class);
-		intent.putExtra(Constants.BIDURLKEY, list.get(position).link);
+		TodayHotBean thb=(TodayHotBean)parent.getItemAtPosition(position);
+		intent.putExtra(Constants.BIDURLKEY, thb.link);
+		intent.putExtra(Constants.TITLEBAR, thb.title);
+		thb=null;
 		startActivity(intent);
-//		ISmthLog.d(Constants.TAG, "title==="+list.get(position).title+"===link=="+list.get(position).link);
 	}
 
 	/**
@@ -222,4 +229,16 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 		});
     	builder.create().show();
 	}
+
+	/**
+	 * 退出程序，销毁一些公共变量的值
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		SmthInstance.getInstance().destroyPicMap();
+		ConnectionManagerInstance.getInstance().destroyCookieValue();
+	}
+	
+	
 }

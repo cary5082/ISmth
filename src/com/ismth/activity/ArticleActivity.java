@@ -23,6 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
@@ -54,6 +55,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	ImageView bigPic;
 	
 	ScrollView scroll;
+	
+	LinearLayout linearLayout;
 	
 	
 	public Handler handler=new Handler(){
@@ -101,6 +104,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery.setSpacing(15);
 		gallery.setOnItemClickListener(this);
 		gallery.setOnItemSelectedListener(this);
+		linearLayout=(LinearLayout)findViewById(R.id.topbar);
 		process();
 	}
 
@@ -112,6 +116,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		Intent intent=getIntent();
 		if(intent!=null){
 			String url=intent.getStringExtra(Constants.BIDURLKEY);
+			String titleString=intent.getStringExtra(Constants.TITLEBAR);
+			title.setText(SmthUtils.getTitleForHtml(titleString));
 			String id=SmthUtils.getIdForUrl(url);
 			//判断是否能取到正确的ID值
 			if(id!=null) {
@@ -211,6 +217,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery.setVisibility(View.GONE);
 		article.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
+		linearLayout.setVisibility(View.GONE);
 	}
 	
 	/**
@@ -289,7 +296,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		ISmthLog.d(Constants.TAG, "====onDestroy======");
 		adapter.exitGallery();
 		adapter=null;
 	}
@@ -306,6 +312,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				article.setVisibility(View.VISIBLE);
 				gallery.setVisibility(View.VISIBLE);
 				scroll.setVisibility(View.VISIBLE);
+				linearLayout.setVisibility(View.VISIBLE);
 				showBigPicFlag=false;
 				bigBitmap.recycle();
 				bigBitmap=null;

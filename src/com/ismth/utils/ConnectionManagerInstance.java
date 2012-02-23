@@ -139,4 +139,8 @@ public class ConnectionManagerInstance {
 		}
 		return sb.toString();
     }
+    
+    public void destroyCookieValue(){
+    	cookieValue="";
+    }
 }
