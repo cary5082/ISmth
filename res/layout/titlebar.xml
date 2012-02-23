@@ -2,12 +2,12 @@
 <LinearLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="fill_parent"
-android:layout_height="fill_parent"
- android:background="@color/title_bg">
+android:layout_height="fill_parent">
         <TextView android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:textColor="@color/text_color"
+        android:layout_centerVertical="true"
+        android:textColor="@color/title_color"
         />            
 </LinearLayout>

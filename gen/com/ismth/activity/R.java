@@ -17,7 +17,7 @@ public final class R {
     }
     public static final class color {
         public static final int text_color=0x7f050000;
-        public static final int title_bg=0x7f050001;
+        public static final int title_color=0x7f050001;
     }
     public static final class drawable {
         public static final int devideline_fafafa=0x7f020000;

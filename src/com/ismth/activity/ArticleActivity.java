@@ -159,28 +159,29 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
     public void showGalleryPic(int articleId) {
     	SmthInstance instance=SmthInstance.getInstance();
     	LinkedList<byte[]> list=instance.getPicMapValue(articleId);
-    	adapter.setArticleId(articleId);
     	try {
-    		if(list!=null) {
-    			byte[] bytearray=null;
-    			Bitmap bm=null;
-    			int i=0;
-    			for(Iterator it=list.iterator();it.hasNext();) {
-    				if(i<Constants.GALLERYLOADNUM) {
-    					bytearray=(byte[])it.next();
-        				bm=BitmapUtils.decodeBitmap(bytearray, 200, 200);
-    				}else {
-    					break;
-    				}
-    				i++;
-    				adapter.add(bm);
-    			}
-    		}
-//    		conMap=null;
-    		list=null;
-        	if(adapter.getCount()>0) {
-        		gallery.setVisibility(View.VISIBLE);
-        		adapter.notifyDataSetChanged();
+    		if(adapter!=null){
+        		adapter.setArticleId(articleId);
+        		if(list!=null) {
+        			byte[] bytearray=null;
+        			Bitmap bm=null;
+        			int i=0;
+        			for(Iterator it=list.iterator();it.hasNext();) {
+        				if(i<Constants.GALLERYLOADNUM) {
+        					bytearray=(byte[])it.next();
+            				bm=BitmapUtils.decodeBitmap(bytearray, 200, 200);
+        				}else {
+        					break;
+        				}
+        				i++;
+        				adapter.add(bm);
+        			}
+        		}
+        		list=null;
+            	if(adapter.getCount()>0) {
+            		gallery.setVisibility(View.VISIBLE);
+            		adapter.notifyDataSetChanged();
+            	}
         	}
     	}catch(Exception e) {
     		e.printStackTrace();
@@ -207,7 +208,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-//		Bitmap bm=(Bitmap)adapter.getItem(position);
 		SmthInstance instance=SmthInstance.getInstance();
 		int articleId=adapter.getArticleId();
 		LinkedList<byte[]> ll=instance.getPicMapValue(articleId);
@@ -301,7 +301,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	protected void onDestroy() {
 		super.onDestroy();
 		adapter.exitGallery();
-		adapter=null;
 	}
 
 	/**
