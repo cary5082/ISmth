@@ -19,9 +19,13 @@ import com.ismth.utils.SmthUtils;
  */
 public class LoginIntentService extends IntentService{
 
+
+	public LoginIntentService() {
+		super("");
+	}
+
 	@Override
-	public void onCreate() {
-		super.onCreate();
+	protected void onHandleIntent(Intent intent) {
 		String userName=SharePreferencesUtils.getString(Constants.USERNAME, "");
 		String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 		if(!"".equals(userName) && !"".equals(password)) {
@@ -36,15 +40,6 @@ public class LoginIntentService extends IntentService{
 				ISmthLog.d(Constants.TAG, "登录失败。");
 			}
 		}
-	}
-
-	public LoginIntentService() {
-		super("");
-	}
-
-	@Override
-	protected void onHandleIntent(Intent arg0) {
-		
 	}
 
 }
