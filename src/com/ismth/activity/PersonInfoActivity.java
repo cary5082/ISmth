@@ -45,7 +45,7 @@ public class PersonInfoActivity extends Activity{
 		if(keyCode==KeyEvent.KEYCODE_BACK) {
 			if(!"".equals(username.getText().toString()) && !"".equals(password.getText().toString())) {
 				//当用户名框和密码框和原有系统存的发生变化，则提示用户是否保存
-				if(!oldUserName.equals(username) || !oldPassword.equals(password)) {
+				if(!oldUserName.equals(username.getText().toString()) || !oldPassword.equals(password.getText().toString())) {
 					showConfirmSave();
 					return true;
 				}

@@ -60,7 +60,6 @@ public class ConnectionManagerInstance {
 				os = conn.getOutputStream();
 				os.write(sb.toString().getBytes("GBK"));
 			}else if(cookieValue.length()!=0){
-				ISmthLog.d(Constants.TAG, "set cookie====="+cookieValue);
 				conn.setRequestProperty("Cookie", cookieValue);
 			}
 			//开始连接服务器
@@ -81,7 +80,6 @@ public class ConnectionManagerInstance {
 				if(tempCookieValue.length()>0) {
 					cookieValue="Hm_lvt_9c7f4d9b7c00cb5aba2c637c64a41567=1328491921147;"+getCookie(tempCookieValue);
 				}
-				ISmthLog.d(Constants.TAG, "cookieValue===="+cookieValue+"==address==="+address);
 			}
 //			BufferedReader br;
 //			Reader reader=null;
