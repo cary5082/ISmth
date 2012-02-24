@@ -180,7 +180,6 @@ public class SmthConnectionHandlerInstance {
 	public void sendMessage(Message message){
 		removeBeforeMessage();
 		if(hasMessageInQueue()) {
-			ISmthLog.d(Constants.TAG, "message queue is true");
 			breakFlag=false;
 		}
 		myHandler.sendMessage(message);
