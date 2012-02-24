@@ -54,5 +54,9 @@ public class Constants {
 	public static final int LEFTSLIPPAGE=1;
 	//右滑
 	public static final int RIGHTSLIPPAGE=2;
+	//获取跟贴ID的URl
+	public static final String REPLYURLKEY="replyurlkey";
+	//跟贴ID的KEY
+	public static final String REPLYIDKEY="replyidkey";
 	
 }

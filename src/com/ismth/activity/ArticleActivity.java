@@ -1,5 +1,6 @@
 package com.ismth.activity;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -59,6 +60,10 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	LinearLayout linearLayout;
 	
 	LinearLayout topbarline;
+	//跟贴ID集合
+	ArrayList<String> replyIds;
+	//获取下一页帖子的URL;
+	String replyUrl;
 	
 	
 	public Handler handler=new Handler(){
@@ -76,6 +81,11 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
 				}
 				article.setText(result);
+				Bundle data=msg.getData();
+				if(data!=null) {
+					replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
+					replyUrl=data.getString(Constants.REPLYURLKEY);
+				}
 				break;
 			case Constants.CONNECTIONERROR:
 				showErrorDialog();

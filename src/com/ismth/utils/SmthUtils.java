@@ -43,6 +43,31 @@ public class SmthUtils {
 	}
 	
 	/**
+	 * 获取主帖后面跟贴的ID
+	 * @param html
+	 * @return
+	 */
+	public static ArrayList<String> getReplyId(String html) {
+		ArrayList<String> list=new ArrayList<String>();
+		String temp=html.substring(html.indexOf("o.o")+3, html.length());
+		temp=temp.substring(0,temp.indexOf("o.h()")-1);
+		String[] array=temp.split("]");
+		String result="";
+		for(String str:array) {
+			if(str!=null && str.length()>0 && str.contains(",")) {
+				str=str.replaceAll("\\[", "");
+				if(str.contains("(")) {
+					result=str.substring(1, str.indexOf(","));
+				}else {
+					result=str.substring(1,str.indexOf("'")-1);
+				}
+				list.add(result);
+			}
+		}
+		return list;
+	}
+	
+	/**
 	 * 在一个URL链接中获得主贴的ID值
 	 * @param url
 	 * @return 返回主贴ID值
