@@ -150,7 +150,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 * 显示加载出错对话框
 	 */
     public void showErrorDialog(){
-    	AlertDialog.Builder builder=new Builder(this);
+    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
     	builder.setMessage("文章加载出错。");
     	builder.setTitle("温馨提示：");
     	builder.setNegativeButton("确定", new OnClickListener() {

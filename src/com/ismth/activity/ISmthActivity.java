@@ -84,7 +84,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 		listView.setOnItemClickListener(this);
 		SharePreferencesUtils.setContext(this);
         //登录
-        Intent intent=new Intent(this,LoginIntentService.class);
+        Intent intent=new Intent(this.getApplicationContext(),LoginIntentService.class);
         startService(intent);
         //获取十大的内容
         SmthConnectionHandlerInstance.getInstance().startThread();
@@ -124,7 +124,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
      * @param list listView里的值
      */
     public void setListViewByTodayHot(List<TodayHotBean> list) {
-    	todayHotAdapter=new TodayHotAdapter(this,list);
+    	todayHotAdapter=new TodayHotAdapter(this.getApplicationContext(),list);
 		listView.setAdapter(todayHotAdapter);
 		list=null;
 		todayHotAdapter=null;
@@ -132,7 +132,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-		Intent intent=new Intent(this,ArticleActivity.class);
+		Intent intent=new Intent(this.getApplicationContext(),ArticleActivity.class);
 		TodayHotBean thb=(TodayHotBean)parent.getItemAtPosition(position);
 		intent.putExtra(Constants.BIDURLKEY, thb.link);
 		intent.putExtra(Constants.TITLEBAR, thb.title);
@@ -144,7 +144,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	 * 显示加载出错对话框
 	 */
     public void showErrorDialog(){
-    	AlertDialog.Builder builder=new Builder(this);
+    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
     	builder.setMessage("网络加载出错。");
     	builder.setTitle("温馨提示：");
     	builder.setPositiveButton("重试", new OnClickListener() {
@@ -189,7 +189,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 			
 			break;
 		case Constants.PERSONINFO:
-			Intent intent=new Intent(this,PersonInfoActivity.class);
+			Intent intent=new Intent(this.getApplicationContext(),PersonInfoActivity.class);
 			startActivity(intent);
 			break;
 		}
@@ -211,7 +211,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	 * 显示退出对话框
 	 */
 	public void showExitDialog(){
-    	AlertDialog.Builder builder=new Builder(this);
+    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
     	builder.setMessage("是否退出应用。");
     	builder.setTitle("退出应用");
     	builder.setPositiveButton("退出", new OnClickListener() {
