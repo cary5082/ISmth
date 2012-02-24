@@ -18,6 +18,9 @@ public class SmthInstance {
 	
 	private SmthInstance(){};
 	
+	//把登录成功后的COOKIE记录放到此变量中
+	private static String cookieValue="";
+	
 	public static SmthInstance getInstance(){
 		return instance;
 	}
@@ -80,5 +83,13 @@ public class SmthInstance {
 	 */
 	public void destroyPicMap() {
 		picMap=null;
+	}
+
+	public static String getCookieValue() {
+		return cookieValue;
+	}
+
+	public static void setCookieValue(String cookieValue) {
+		SmthInstance.cookieValue = cookieValue;
 	}
 }

@@ -28,7 +28,7 @@ public class LoginIntentService extends IntentService{
 			String result=null;
 			HttpURLConnection conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.LOGINURL, "POST");
 			if(conn!=null) {
-				result=SmthUtils.getStringForHttp(conn, false, null);
+				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 			}
 			if(result!=null && result.length()>0) {
 				ISmthLog.d(Constants.TAG, "登录成功。");

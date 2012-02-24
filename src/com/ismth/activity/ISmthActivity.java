@@ -87,8 +87,8 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
         Intent intent=new Intent(this,LoginIntentService.class);
         startService(intent);
         //获取十大的内容
-//        SmthConnectionHandlerInstance.getInstance().startThread();
-//        getTodayHot();
+        SmthConnectionHandlerInstance.getInstance().startThread();
+        getTodayHot();
     }
     
     /**

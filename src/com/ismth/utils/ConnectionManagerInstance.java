@@ -53,31 +53,35 @@ public class ConnectionManagerInstance {
 			conn.setRequestProperty("Accept-Charset", "GB2312");
 			//如果cookieValue里的值不为空时，说明之前登录过了，此时只需要把上次记录的COOKIE放到此次登录中就行, 反之则需要直接登录
 			String username=SharePreferencesUtils.getString(Constants.USERNAME,"guest");
-			if(cookieValue.length()==0 && !"guest".equals(username)) {
+			if(cookieValue.length()==0 && !"guest".equals(username) && address.equals(Constants.LOGINURL)) {
 				StringBuffer sb = new StringBuffer();
 				String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 				sb.append("id=").append(username).append("&passwd=").append(password);
 				os = conn.getOutputStream();
 				os.write(sb.toString().getBytes("GBK"));
 			}else if(cookieValue.length()!=0){
+				ISmthLog.d(Constants.TAG, "set cookie====="+cookieValue);
 				conn.setRequestProperty("Cookie", cookieValue);
 			}
 			//开始连接服务器
 			conn.connect();
 			//说明并没有保存登录后的cookie，把登录后的cookie保存下来，供下次连接使用
-			if(cookieValue.length()==0 && !"guest".equals(username)) {
+			if(cookieValue.length()==0 && !"guest".equals(username) && address.equals(Constants.LOGINURL)) {
 				Map<String, List<String>> hfMap=conn.getHeaderFields();
 				String tempCookieValue="";
 				Set<String> keys=hfMap.keySet();
 				for(String key:keys) {
-					if(key!=null && ("Set-Cookie").equals(key)) {
+					if(key!=null && ("set-cookie").equals(key.toLowerCase())) {
 						List<String> vs=(List<String>)hfMap.get(key);
 						for(String v:vs){
 							tempCookieValue+=v;
 						}
 					}
 				}
-				cookieValue="Hm_lvt_9c7f4d9b7c00cb5aba2c637c64a41567=1328491921147;"+getCookie(tempCookieValue);
+				if(tempCookieValue.length()>0) {
+					cookieValue="Hm_lvt_9c7f4d9b7c00cb5aba2c637c64a41567=1328491921147;"+getCookie(tempCookieValue);
+				}
+				ISmthLog.d(Constants.TAG, "cookieValue===="+cookieValue+"==address==="+address);
 			}
 //			BufferedReader br;
 //			Reader reader=null;
@@ -134,6 +138,10 @@ public class ConnectionManagerInstance {
 					}
 					String r=st[st.length-1].replaceAll("net", "").replaceAll("\\s*","");
 					sb.append(r);
+				}else {		//如果当前字符串中没有.判断是不是有UTMPKEY字符串存在
+					if(b[i].contains("UTMPKEY")) {
+						sb.append(";").append(b[i].replaceAll("path=\\/", ""));
+					}
 				}
 			}
 		}
