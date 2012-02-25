@@ -82,7 +82,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 		alphaAnimation = AnimationUtils.loadAnimation(this, R.anim.shade_alpha);
 		listView=(ListView)findViewById(R.id.todayhot);
 		listView.setOnItemClickListener(this);
-		SharePreferencesUtils.setContext(this);
+		SharePreferencesUtils.setContext(this.getApplicationContext());
         //登录
         Intent intent=new Intent(this.getApplicationContext(),LoginIntentService.class);
         startService(intent);

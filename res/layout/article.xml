@@ -13,14 +13,14 @@
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
         	    android:textColor="@color/text_color"
-        	    android:layout_marginRight="8dp"
+        	    android:layout_marginRight="18dp"
         	    android:text="查看回帖"/>
     	
     	<TextView android:id="@+id/add_article"
     	    	android:layout_width="wrap_content"
     	    	android:layout_height="wrap_content"
     	    	android:textColor="@color/text_color"
-    	    	android:layout_marginRight="8dp"
+    	    	android:layout_marginRight="18dp"
     	    	android:text="回复"/>
     </LinearLayout>
     

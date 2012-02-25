@@ -33,7 +33,6 @@ import com.ismth.adapter.GalleryAdapter;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.BitmapUtils;
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 
@@ -43,7 +42,7 @@ import com.ismth.utils.SmthUtils;
  *@Author:wangjianfei
  *@Version:
  */
-public class ArticleActivity extends Activity implements OnItemClickListener,OnItemSelectedListener{
+public class ArticleActivity extends Activity implements OnItemClickListener,OnItemSelectedListener,View.OnClickListener{
 
 	TextView article;
 	GalleryAdapter adapter;
@@ -64,6 +63,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	ArrayList<String> replyIds;
 	//获取下一页帖子的URL;
 	String replyUrl;
+	TextView reply;
+	TextView addArticle;
 	
 	
 	public Handler handler=new Handler(){
@@ -92,7 +93,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				break;
 			case Constants.CONNECTIONATTACH:
 				int articleId=(Integer)msg.arg1;
-				ISmthLog.d(Constants.TAG, "into show gallery==");
 				showGalleryPic(articleId);
 				break;
 			}
@@ -110,7 +110,9 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery=(Gallery)findViewById(R.id.gallery);
 		scroll=(ScrollView)findViewById(R.id.scroll);
 		bigPic=(ImageView)findViewById(R.id.bigpic);
-		adapter=new GalleryAdapter(this);
+		reply=(TextView)findViewById(R.id.reply);
+		addArticle=(TextView)findViewById(R.id.add_article);
+		adapter=new GalleryAdapter(getApplicationContext());
 		gallery.setAdapter(adapter);
 		//设置图片边距
 		gallery.setSpacing(15);
@@ -118,6 +120,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery.setOnItemSelectedListener(this);
 		linearLayout=(LinearLayout)findViewById(R.id.topbar);
 		topbarline=(LinearLayout)findViewById(R.id.topbarline);
+		reply.setOnClickListener((android.view.View.OnClickListener) this);
+		addArticle.setOnClickListener(this);
 		process();
 	}
 
@@ -337,6 +341,23 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			}
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	/**
+	 * 监听页面按钮事件
+	 */
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		//点击查看回帖按扭
+		case R.id.reply:
+			
+			break;
+		//点击回复按扭
+		case R.id.add_article:
+			
+			break;
+		}
 	}
 	
 	
