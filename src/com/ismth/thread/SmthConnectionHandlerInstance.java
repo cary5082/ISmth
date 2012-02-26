@@ -94,13 +94,15 @@ public class SmthConnectionHandlerInstance {
 				String bid=null;
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-					ArrayList<String> replayIds=SmthUtils.getReplyId(result);
-					Bundle data=new Bundle();
-					data.putStringArrayList(Constants.REPLYIDKEY, replayIds);
-					data.putString(Constants.REPLYURLKEY, url);
-					message.setData(data);
-					bid=SmthUtils.getBidForHtml(result);
-					replayIds=null;
+					if(result!=null && result.length()>0) {
+						ArrayList<String> replayIds=SmthUtils.getReplyId(result);
+						Bundle data=new Bundle();
+						data.putStringArrayList(Constants.REPLYIDKEY, replayIds);
+						data.putString(Constants.REPLYURLKEY, url);
+						message.setData(data);
+						bid=SmthUtils.getBidForHtml(result);
+						replayIds=null;
+					}
 				}
 				if(bid!=null) {
 					String articleUrl=Constants.ARTICLEURL.replaceAll("@bid", bid).replaceAll("@id", id);

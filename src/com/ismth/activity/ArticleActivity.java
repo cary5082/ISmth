@@ -19,12 +19,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
@@ -45,6 +49,10 @@ import com.ismth.utils.SmthUtils;
 public class ArticleActivity extends Activity implements OnItemClickListener,OnItemSelectedListener,View.OnClickListener{
 
 	TextView article;
+	private RelativeLayout loadlayout; 
+	private ImageView loadquan; 
+	private TextView loadMsg; 
+	private Animation rotateAnimation;
 	GalleryAdapter adapter;
 	Gallery gallery;
 	//是否正在显示大图标志位，TRUE为正在显示
@@ -80,6 +88,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					int height = wm.getDefaultDisplay().getHeight();//屏幕高度
 					//如果有附件把scrollView高度设为屏幕高度一半
 					scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
+					//如果有附件显示正在加载附件对话框
+					SmthUtils.showLoadingDialog(loadlayout, loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
 				}
 				article.setText(result);
 				Bundle data=msg.getData();
@@ -89,9 +99,11 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				}
 				break;
 			case Constants.CONNECTIONERROR:
+				SmthUtils.hideLoadingDialog(loadlayout, loadquan);
 				showErrorDialog();
 				break;
 			case Constants.CONNECTIONATTACH:
+				SmthUtils.hideLoadingDialog(loadlayout, loadquan);
 				int articleId=(Integer)msg.arg1;
 				showGalleryPic(articleId);
 				break;
@@ -105,6 +117,14 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); 
 		setContentView(R.layout.article);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.titlebar);
+		//加载框
+		loadMsg = (TextView) findViewById(R.id.loadMsg);
+		loadlayout = (RelativeLayout) findViewById(R.id.loadlayout);
+		loadquan = (ImageView) findViewById(R.id.loadquan);
+		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
+		rotateAnimation.setInterpolator(new LinearInterpolator());
+        
+		
         title=(TextView)findViewById(R.id.title);
 		article=(TextView)findViewById(R.id.article);
 		gallery=(Gallery)findViewById(R.id.gallery);
@@ -120,7 +140,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery.setOnItemSelectedListener(this);
 		linearLayout=(LinearLayout)findViewById(R.id.topbar);
 		topbarline=(LinearLayout)findViewById(R.id.topbarline);
-		reply.setOnClickListener((android.view.View.OnClickListener) this);
+		reply.setOnClickListener(this);
 		addArticle.setOnClickListener(this);
 		process();
 	}
@@ -154,7 +174,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 * 显示加载出错对话框
 	 */
     public void showErrorDialog(){
-    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
+    	AlertDialog.Builder builder=new Builder(this);
     	builder.setMessage("文章加载出错。");
     	builder.setTitle("温馨提示：");
     	builder.setNegativeButton("确定", new OnClickListener() {

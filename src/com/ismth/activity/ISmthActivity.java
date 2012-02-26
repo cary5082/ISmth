@@ -37,10 +37,10 @@ import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SharePreferencesUtils;
 import com.ismth.utils.SmthInstance;
+import com.ismth.utils.SmthUtils;
 
 public class ISmthActivity extends Activity implements OnItemClickListener{
 	
-	private Animation alphaAnimation; 
 	private RelativeLayout quanquanLayout; 
 	private ImageView quanquan; 
 	private TextView quanMsg; 
@@ -53,7 +53,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			hideDialog();
+			SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				list=(List<TodayHotBean>)msg.obj;
@@ -74,12 +74,13 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.titlebar);
         title=(TextView)findViewById(R.id.title);
         title.setText("十大主题排行");
+        //加载框
         quanMsg = (TextView) findViewById(R.id.quanMsg);
 		quanquanLayout = (RelativeLayout) findViewById(R.id.quanquanLayout);
 		quanquan = (ImageView) findViewById(R.id.quanquan);
 		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
 		rotateAnimation.setInterpolator(new LinearInterpolator());
-		alphaAnimation = AnimationUtils.loadAnimation(this, R.anim.shade_alpha);
+		
 		listView=(ListView)findViewById(R.id.todayhot);
 		listView.setOnItemClickListener(this);
 		SharePreferencesUtils.setContext(this.getApplicationContext());
@@ -95,28 +96,11 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
      * 获取十大的内容
      */
     public void getTodayHot(){
-    	showDialog();
+    	SmthUtils.showLoadingDialog(quanquanLayout, quanquan, quanMsg, rotateAnimation, "正在载入...");
     	Message msg=Message.obtain();
     	msg.what=Constants.TODAYHOT;
     	msg.obj=handler;
     	SmthConnectionHandlerInstance.getInstance().sendMessage(msg);
-    }
-    
-    /**
-     * 显示加载对话框
-     */
-    public void showDialog(){
-		quanMsg.setText("正在载入...");
-		quanquanLayout.setVisibility(View.VISIBLE);
-		quanquan.startAnimation(rotateAnimation);
-    }
-    
-    /**
-     * 隐藏加载对话框
-     */
-    public void hideDialog(){
-    	quanquanLayout.setVisibility(View.GONE);
-    	quanquan.clearAnimation();
     }
     
     /**
@@ -144,7 +128,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	 * 显示加载出错对话框
 	 */
     public void showErrorDialog(){
-    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
+    	AlertDialog.Builder builder=new Builder(this);
     	builder.setMessage("网络加载出错。");
     	builder.setTitle("温馨提示：");
     	builder.setPositiveButton("重试", new OnClickListener() {
@@ -211,7 +195,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	 * 显示退出对话框
 	 */
 	public void showExitDialog(){
-    	AlertDialog.Builder builder=new Builder(this.getApplicationContext());
+    	AlertDialog.Builder builder=new Builder(this);
     	builder.setMessage("是否退出应用。");
     	builder.setTitle("退出应用");
     	builder.setPositiveButton("退出", new OnClickListener() {

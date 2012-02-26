@@ -47,10 +47,14 @@
 	
     <Gallery android:id="@+id/gallery"
         	 android:layout_width="fill_parent"
-        	 android:layout_height="wrap_content"/>    
+        	 android:layout_height="wrap_content"
+        	 />    
         	 
-    <RelativeLayout android:layout_width="fill_parent"
+    <RelativeLayout android:id="@+id/loadlayout"
+        			android:layout_width="fill_parent"
         			android:layout_height="fill_parent"
+        			android:layout_centerInParent="true"
+        			android:visibility="gone"
         			>
     
         <ImageView android:id="@+id/bigpic"
@@ -58,5 +62,25 @@
             	   android:layout_height="wrap_content"
             	   android:layout_centerInParent="true"
             	   android:visibility="gone"/>
+        
+            <ImageView
+                android:id="@+id/loadquan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/loading_icon" />
+
+            <TextView
+                android:id="@+id/loadMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/loadquan"
+                android:paddingLeft="20dip"
+                android:text="正在载入..."
+                android:textColor="#333333"
+                android:textSize="16sp" />
+        
     </RelativeLayout>
+    
 </LinearLayout>

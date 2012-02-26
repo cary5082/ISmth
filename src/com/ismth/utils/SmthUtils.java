@@ -9,9 +9,9 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
+import android.view.View;
+import android.view.animation.Animation;
+import android.widget.TextView;
 
 import com.ismth.bean.ArticleBean;
 
@@ -226,7 +226,36 @@ public class SmthUtils {
 		return b;
 	}
 	
+	/**
+	 * 获得文章的TITLE
+	 * @param html
+	 * @return
+	 */
 	public static String getTitleForHtml(String html) {
 		return html.substring(html.indexOf("]")+1, html.length());
+	}
+	
+	/**
+	 * 显示正在加载对话框
+	 * @param layout 加载对话框布局文件
+	 * @param image imageView
+	 * @param textView 加载对话框文件
+	 * @param ani 加载动画
+	 * @param str 加载文本
+	 */
+	public static void showLoadingDialog(View layout,View image,TextView textView,Animation ani,String str) {
+		textView.setText(str);
+		image.startAnimation(ani);
+		layout.setVisibility(View.VISIBLE);
+	}
+	
+	/**
+	 * 隐藏加载对话框
+	 * @param layout
+	 * @param image
+	 */
+	public static void hideLoadingDialog(View layout,View image) {
+		image.clearAnimation();
+		layout.setVisibility(View.GONE);
 	}
 }
