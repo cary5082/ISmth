@@ -140,7 +140,6 @@ public class SmthConnectionHandlerInstance {
 				//判断是否有附件，如果有的话去抓取附件
 				if(ab!=null && ab.attachIds!=null && ab.attachIds.size()>0) {
 					getAttachSource(ab.attachIds, bid, id);
-					ISmthLog.d(Constants.TAG, "send byte to gallery===");
 					Message attMessage=Message.obtain();
 					attMessage.what=Constants.CONNECTIONATTACH;
 					attMessage.arg1=Integer.valueOf(id);
@@ -237,7 +236,6 @@ public class SmthConnectionHandlerInstance {
 						if(conn!=null) {
 							byte[] temp=SmthUtils.getByteArrayForHttp(conn);
 							if(temp!=null && temp.length>0) {
-								ISmthLog.d(Constants.TAG, "byte length==="+temp.length);
 								linked.add(temp);
 							}
 						}
