@@ -72,7 +72,6 @@ public final class BitmapUtils {
 			}
 		}
 		op.inJustDecodeBounds = false;
-//		bmp = BitmapFactory.decodeFile(path, op);
 		Bitmap bmp=BitmapFactory.decodeResource(resource, id);
 		return Bitmap.createScaledBitmap(bmp, displayWidth, displayHeight, true);
 	}
