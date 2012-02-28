@@ -22,6 +22,8 @@ public class Constants {
 	public static final int TODAYHOT=1;
 	//单篇文章
 	public static final int ARTICLE=2;
+	//查看回帖
+	public static final int LISTREPLY=3;
 	//十大的RSSURL
 	public static final String TODAYHOTURL="http://www.newsmth.net/rssi.php?h=1";
 	//文章主贴的链接@bid,@id会在发起链接时替换成相应的参数
@@ -58,5 +60,9 @@ public class Constants {
 	public static final String REPLYURLKEY="replyurlkey";
 	//跟贴ID的KEY
 	public static final String REPLYIDKEY="replyidkey";
+	//BID
+	public static final String BIDKEY="bidkey";
+	//帖子分页
+	public static final String PNOKEY="pnokey";
 	
 }

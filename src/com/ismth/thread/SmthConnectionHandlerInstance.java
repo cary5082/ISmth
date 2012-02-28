@@ -56,15 +56,15 @@ public class SmthConnectionHandlerInstance {
 		@Override
 		public void handleMessage(Message msg) {
 			//回调的handler
-			Handler handler=null;
+			Handler handler=(Handler)msg.obj;
 			//读取URL中的内容
 			String result=null;
 			HttpURLConnection conn=null;
+			Bundle bundle=null;
 			Message message=Message.obtain();
 			switch(msg.what) {
 			//获取十大
 			case Constants.TODAYHOT:
-				handler=(Handler)msg.obj;
 				//先获取十大帖子字节流
 				conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.TODAYHOTURL, "GET");
 				if(conn!=null){
@@ -84,8 +84,7 @@ public class SmthConnectionHandlerInstance {
 				break;
 				//获取单篇文章
 			case Constants.ARTICLE:
-				handler=(Handler)msg.obj;
-				Bundle bundle=msg.getData();
+				bundle=msg.getData();
 				ArticleBean ab=null;
 				String url=bundle.getString(Constants.BIDURLKEY);
 				String id=bundle.getString(Constants.IDKEY);
@@ -99,8 +98,9 @@ public class SmthConnectionHandlerInstance {
 						Bundle data=new Bundle();
 						data.putStringArrayList(Constants.REPLYIDKEY, replayIds);
 						data.putString(Constants.REPLYURLKEY, url);
-						message.setData(data);
 						bid=SmthUtils.getBidForHtml(result);
+						data.putString(Constants.BIDKEY,bid);
+						message.setData(data);
 						replayIds=null;
 					}
 				}
@@ -110,7 +110,6 @@ public class SmthConnectionHandlerInstance {
 //					bid="874";
 //					id="1792262";
 					conn=ConnectionManagerInstance.getInstance().connectionServer(articleUrl, "GET");
-					ISmthLog.d(Constants.TAG, "conn finish==");
 					if(conn!=null) {
 						result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 						ab=SmthUtils.getArticleForHtml(result);
@@ -136,7 +135,6 @@ public class SmthConnectionHandlerInstance {
 					//把结果返回activity
 					handler.sendMessage(message);
 				}
-				
 				//判断是否有附件，如果有的话去抓取附件
 				if(ab!=null && ab.attachIds!=null && ab.attachIds.size()>0) {
 					getAttachSource(ab.attachIds, bid, id);
@@ -145,6 +143,14 @@ public class SmthConnectionHandlerInstance {
 					attMessage.arg1=Integer.valueOf(id);
 					handler.sendMessage(attMessage);
 				}
+				break;
+			//获取回帖
+			case Constants.LISTREPLY:
+				bundle=msg.getData();
+				//获取回帖的ID
+				ArrayList<String> replyIds=bundle.getStringArrayList(Constants.REPLYIDKEY);
+				bid=bundle.getString(Constants.BIDKEY);
+				
 				break;
 			}
 		}
@@ -192,6 +198,7 @@ public class SmthConnectionHandlerInstance {
 	public void removeBeforeMessage() {
 		myHandler.removeMessages(Constants.TODAYHOT);
 		myHandler.removeMessages(Constants.ARTICLE);
+		myHandler.removeMessages(Constants.LISTREPLY);
 	}
 	
 	/**

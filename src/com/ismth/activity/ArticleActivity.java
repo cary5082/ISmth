@@ -73,6 +73,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	String replyUrl;
 	TextView reply;
 	TextView addArticle;
+	String bid;
 	
 	
 	public Handler handler=new Handler(){
@@ -96,6 +97,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				if(data!=null) {
 					replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 					replyUrl=data.getString(Constants.REPLYURLKEY);
+					bid=data.getString(Constants.BIDKEY);
 				}
 				break;
 			case Constants.CONNECTIONERROR:
@@ -371,7 +373,13 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		switch(v.getId()) {
 		//点击查看回帖按扭
 		case R.id.reply:
-			
+			Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
+			intent.putStringArrayListExtra(Constants.REPLYIDKEY, replyIds);
+			intent.putExtra(Constants.REPLYURLKEY, replyUrl);
+			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
+			intent.putExtra(Constants.BIDKEY, bid);
+			startActivity(intent);
+			finish();
 			break;
 		//点击回复按扭
 		case R.id.add_article:
