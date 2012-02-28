@@ -74,6 +74,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	TextView reply;
 	TextView addArticle;
 	String bid;
+	//主帖子ID
+	String id;
 	
 	
 	public Handler handler=new Handler(){
@@ -157,7 +159,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			String url=intent.getStringExtra(Constants.BIDURLKEY);
 			String titleString=intent.getStringExtra(Constants.TITLEBAR);
 			title.setText(SmthUtils.getTitleForHtml(titleString));
-			String id=SmthUtils.getIdForUrl(url);
+			id=SmthUtils.getIdForUrl(url);
 			//判断是否能取到正确的ID值
 			if(id!=null) {
 				Message message=Message.obtain();
@@ -378,6 +380,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			intent.putExtra(Constants.REPLYURLKEY, replyUrl);
 			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
 			intent.putExtra(Constants.BIDKEY, bid);
+			intent.putExtra(Constants.IDKEY, id);
 			startActivity(intent);
 			finish();
 			break;

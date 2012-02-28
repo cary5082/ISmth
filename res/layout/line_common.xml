@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/line1"
+        android:layout_marginTop="4dp"
+        android:layout_width="fill_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/devideline_fafafa"/>

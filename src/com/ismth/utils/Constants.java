@@ -30,9 +30,9 @@ public class Constants {
 	public static  String ARTICLEURL="http://www.newsmth.net/bbscon.php?bid=@bid&id=@id";
 	//文章附件的链接@bid,@id,@attachid会在发起链接时替换成相应的参数
 	public static String ATTACHURL="http://att.newsmth.net/att.php?p.@bid.@id.@attachid.jpg";
-	//隐藏加框对话框
+	//服务器通信成功
 	public static final int CONNECTIONSUCCESS=1;
-	//已服务器通信出错
+	//服务器通信出错
 	public static final int CONNECTIONERROR=2;
 	//从服务器获取附件
 	public static final int CONNECTIONATTACH=3;

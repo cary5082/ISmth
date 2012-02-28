@@ -1,8 +1,13 @@
 package com.ismth.activity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ismth.adapter.ListReplyAdapter;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.Constants;
 import com.ismth.utils.SmthUtils;
@@ -38,17 +44,34 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 	private TextView title;
 	//跟贴ID集合
 	ArrayList<String> replyIds;
+	//回帖的内容
+	LinkedList<String> replyContent=new LinkedList<String>();
 	//获取下一页帖子的URL;
 	String replyUrl;
 	String titleString;
 	//帖子分页，默认第一页
 	int pno=1;
 	String bid;
+	ListReplyAdapter adapter;
+	String id;
 	
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			
+			switch(msg.what) {
+			case Constants.CONNECTIONSUCCESS:
+				SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
+				replyContent=(LinkedList<String>)msg.obj;
+				//说明获取数据正确
+				if(replyContent.size()>0) {
+					replyIds=null;
+					adapter.setListReply(replyContent);
+					adapter.notifyDataSetChanged();
+				}else {	//提示用户获取数据失败
+					showErrorDialog();
+				}
+				break;
+			}
 		}
 	};
 	
@@ -67,6 +90,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
         	replyUrl=intent.getStringExtra(Constants.REPLYURLKEY);
         	titleString=intent.getStringExtra(Constants.TITLEBAR);
         	bid=intent.getStringExtra(Constants.BIDKEY);
+        	id=intent.getStringExtra(Constants.IDKEY);
         }
         title=(TextView)findViewById(R.id.title);
         title.setText(titleString);
@@ -78,6 +102,8 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 		rotateAnimation.setInterpolator(new LinearInterpolator());
 		listView=(ListView)findViewById(R.id.list_reply);
 		listView.setOnItemClickListener(this);
+		adapter=new ListReplyAdapter(getApplicationContext());
+		listView.setAdapter(adapter);
 		startProcess();
 		
 	}
@@ -90,7 +116,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 		Message msg=Message.obtain();
 		Bundle data=new Bundle();
 		data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
+		data.putString(Constants.REPLYURLKEY, replyUrl);
+		data.putInt(Constants.PNOKEY, pno);
 		data.putString(Constants.BIDKEY, bid);
+		data.putString(Constants.IDKEY, id);
 		msg.setData(data);
 		msg.what=Constants.LISTREPLY;
 		//handler用于回调
@@ -104,5 +133,28 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 		
 	}
 
+	/**
+	 * 显示加载出错对话框
+	 */
+    public void showErrorDialog(){
+    	AlertDialog.Builder builder=new Builder(this);
+    	builder.setMessage("网络加载出错。");
+    	builder.setTitle("温馨提示：");
+    	builder.setPositiveButton("重试", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				startProcess();
+			}
+		});
+    	builder.setNegativeButton("退出", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				finish();
+			}
+		});
+    	builder.create().show();
+    }
 	
 }

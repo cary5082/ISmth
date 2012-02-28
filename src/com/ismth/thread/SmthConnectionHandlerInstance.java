@@ -61,6 +61,8 @@ public class SmthConnectionHandlerInstance {
 			String result=null;
 			HttpURLConnection conn=null;
 			Bundle bundle=null;
+			String bid=null;
+			String id=null;
 			Message message=Message.obtain();
 			switch(msg.what) {
 			//获取十大
@@ -87,21 +89,20 @@ public class SmthConnectionHandlerInstance {
 				bundle=msg.getData();
 				ArticleBean ab=null;
 				String url=bundle.getString(Constants.BIDURLKEY);
-				String id=bundle.getString(Constants.IDKEY);
+				id=bundle.getString(Constants.IDKEY);
 				//先从帖子的URL中读取网页内容，从网页内容中获得BID,先拿到字节流
 				conn=ConnectionManagerInstance.getInstance().connectionServer(url, "GET");
-				String bid=null;
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
-						ArrayList<String> replayIds=SmthUtils.getReplyId(result);
+						ArrayList<String> replyIds=SmthUtils.getReplyId(result);
 						Bundle data=new Bundle();
-						data.putStringArrayList(Constants.REPLYIDKEY, replayIds);
+						data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
 						data.putString(Constants.REPLYURLKEY, url);
 						bid=SmthUtils.getBidForHtml(result);
 						data.putString(Constants.BIDKEY,bid);
 						message.setData(data);
-						replayIds=null;
+						replyIds=null;
 					}
 				}
 				if(bid!=null) {
@@ -146,11 +147,44 @@ public class SmthConnectionHandlerInstance {
 				break;
 			//获取回帖
 			case Constants.LISTREPLY:
+				LinkedList<String> ll=new LinkedList<String>();
 				bundle=msg.getData();
-				//获取回帖的ID
+				//回帖的主ID
 				ArrayList<String> replyIds=bundle.getStringArrayList(Constants.REPLYIDKEY);
 				bid=bundle.getString(Constants.BIDKEY);
-				
+				int pno=bundle.getInt(Constants.PNOKEY);
+				id=bundle.getString(Constants.IDKEY);
+				String replyUrl=bundle.getString(Constants.REPLYURLKEY);
+				replyUrl+="&pno="+pno;
+				String tempUrl=Constants.ARTICLEURL.replaceAll("@bid", bid);
+				//如果没有回贴主ID，则获取回帖主ID
+				if(replyIds==null) {
+					conn=ConnectionManagerInstance.getInstance().connectionServer(replyUrl, "GET");
+					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+					if(result!=null && result.length()>0) {
+						replyIds=SmthUtils.getReplyId(result);
+					}
+				}
+				if(replyIds!=null) {
+					//遍历每个回贴的主ID，获取回帖内容
+					for(String aid:replyIds) {
+						if(!aid.equals(id)) {
+							String tu=tempUrl.replaceAll("@id", aid);
+							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
+							if(conn!=null) {
+								result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+								ab=SmthUtils.getArticleForHtml(result);
+								ll.add(ab.content);
+								ab=null;
+								result=null;
+							}
+						}
+					}
+				}
+				message.obj=ll;
+				message.what=Constants.CONNECTIONSUCCESS;
+				//通过HANDLER通知主线程UI
+				handler.sendMessage(message);
 				break;
 			}
 		}
