@@ -67,4 +67,6 @@ public class Constants {
 	//帖子分页
 	public static final String PNOKEY="pnokey";
 	
+	public static final String ARTICLEBUNDLE="articleBundle";
+	
 }

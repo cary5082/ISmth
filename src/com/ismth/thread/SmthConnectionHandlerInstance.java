@@ -95,9 +95,10 @@ public class SmthConnectionHandlerInstance {
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
-						ArrayList<String> replyIds=SmthUtils.getReplyId(result);
+						LinkedList<String>replyIds=SmthUtils.getReplyId(result);
 						Bundle data=new Bundle();
-						data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
+						data.putSerializable(Constants.REPLYIDKEY, replyIds);
+//						data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
 						data.putString(Constants.REPLYURLKEY, url);
 						bid=SmthUtils.getBidForHtml(result);
 						data.putString(Constants.BIDKEY,bid);
@@ -150,7 +151,7 @@ public class SmthConnectionHandlerInstance {
 				LinkedList<String> ll=new LinkedList<String>();
 				bundle=msg.getData();
 				//回帖的主ID
-				ArrayList<String> replyIds=bundle.getStringArrayList(Constants.REPLYIDKEY);
+				LinkedList<String> replyIds=(LinkedList<String>)bundle.getSerializable(Constants.REPLYIDKEY);
 				bid=bundle.getString(Constants.BIDKEY);
 				int pno=bundle.getInt(Constants.PNOKEY);
 				id=bundle.getString(Constants.IDKEY);
@@ -181,6 +182,8 @@ public class SmthConnectionHandlerInstance {
 						}
 					}
 				}
+				bundle.putSerializable(Constants.REPLYIDKEY, replyIds);
+				message.setData(bundle);
 				message.obj=ll;
 				message.what=Constants.CONNECTIONSUCCESS;
 				//通过HANDLER通知主线程UI

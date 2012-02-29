@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.view.View;
@@ -47,8 +48,8 @@ public class SmthUtils {
 	 * @param html
 	 * @return
 	 */
-	public static ArrayList<String> getReplyId(String html) {
-		ArrayList<String> list=new ArrayList<String>();
+	public static LinkedList<String> getReplyId(String html) {
+		LinkedList<String> list=new LinkedList<String>();
 		String temp=html.substring(html.indexOf("o.o")+3, html.length());
 		temp=temp.substring(0,temp.indexOf("o.h()")-1);
 		String[] array=temp.split("]");
