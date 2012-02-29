@@ -15,8 +15,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -72,7 +75,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	//获取下一页帖子的URL;
 	String replyUrl;
 	TextView reply;
-	TextView addArticle;
 	String bid;
 	//主帖子ID
 	String id;
@@ -94,6 +96,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					//如果有附件显示正在加载附件对话框
 					SmthUtils.showLoadingDialog(loadlayout, loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
 				}
+				reply.setVisibility(View.VISIBLE);
 				article.setText(result);
 				Bundle data=msg.getData();
 				if(data!=null) {
@@ -135,7 +138,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		scroll=(ScrollView)findViewById(R.id.scroll);
 		bigPic=(ImageView)findViewById(R.id.bigpic);
 		reply=(TextView)findViewById(R.id.reply);
-		addArticle=(TextView)findViewById(R.id.add_article);
 		adapter=new GalleryAdapter(getApplicationContext());
 		gallery.setAdapter(adapter);
 		//设置图片边距
@@ -145,8 +147,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		linearLayout=(LinearLayout)findViewById(R.id.topbar);
 		topbarline=(LinearLayout)findViewById(R.id.topbarline);
 		reply.setOnClickListener(this);
-		addArticle.setOnClickListener(this);
 		process();
+		initMenuForTextView();
 	}
 
 	/**
@@ -384,12 +386,20 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			startActivity(intent);
 			finish();
 			break;
-		//点击回复按扭
-		case R.id.add_article:
-			
-			break;
 		}
 	}
 	
+	/**
+	 * 初始化textview的菜单选项
+	 */
+	public void initMenuForTextView(){
+		article.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+			@Override
+			public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
+				menu.setHeaderTitle("菜单");
+				menu.add(0, 0, 0, "回复");
+			}
+		});
+	}
 	
 }

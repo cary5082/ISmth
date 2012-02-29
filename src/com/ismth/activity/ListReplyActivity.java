@@ -12,7 +12,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -105,7 +108,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 		adapter=new ListReplyAdapter(getApplicationContext());
 		listView.setAdapter(adapter);
 		startProcess();
-		
+		initMenuForListView();
 	}
 
 	/**
@@ -157,4 +160,16 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
     	builder.create().show();
     }
 	
+    /**
+     * 初始化listview长按的menu选项
+     */
+    public void initMenuForListView(){
+    	listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener(){
+			@Override
+			public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
+				menu.setHeaderTitle("菜单");
+				menu.add(0, 0, 0, "回复");
+			}
+    	});
+    }
 }

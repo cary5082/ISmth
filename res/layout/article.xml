@@ -6,22 +6,15 @@
     android:background="@drawable/loading_bg">
     
     <LinearLayout android:id="@+id/topbar"
-    			  android:layout_width="wrap_content"
+    			  android:layout_width="fill_parent"
     			  android:layout_height="wrap_content"
     			  android:orientation="horizontal">
     	<TextView android:id="@+id/reply"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
         	    android:textColor="@color/text_color"
-        	    android:layout_marginRight="18dp"
+        	    android:visibility="invisible"
         	    android:text="查看回帖"/>
-    	
-    	<TextView android:id="@+id/add_article"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"
-    	    	android:textColor="@color/text_color"
-    	    	android:layout_marginRight="18dp"
-    	    	android:text="回复"/>
     </LinearLayout>
     
     <LinearLayout
