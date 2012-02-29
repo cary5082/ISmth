@@ -4,6 +4,23 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" 
     android:background="@drawable/loading_bg">
+
+    <LinearLayout android:layout_width="fill_parent"
+    			  android:layout_height="wrap_content"
+    			  android:orientation="horizontal">
+    	<TextView android:id="@+id/page"
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+        	    android:textColor="@color/text_color"
+        	    android:visibility="invisible"
+        	    android:text="下一页"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/devideline_fafafa"/>    
     
 	<ListView android:id="@+id/list_reply"
 	    	  android:layout_width="fill_parent"

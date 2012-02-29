@@ -37,7 +37,7 @@ import com.ismth.utils.SmthUtils;
  *2012-2-25 上午11:32:26
  *author:cary
  */
-public class ListReplyActivity extends Activity implements OnItemClickListener{
+public class ListReplyActivity extends Activity implements OnItemClickListener,android.view.View.OnClickListener{
 
 	private RelativeLayout quanquanLayout; 
 	private ImageView quanquan; 
@@ -57,6 +57,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 	String bid;
 	ListReplyAdapter adapter;
 	String id;
+	TextView page;
 	
 	public Handler handler=new Handler(){
 		@Override
@@ -68,6 +69,9 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 				//说明获取数据正确
 				if(replyContent.size()>0) {
 					replyIds=null;
+					pno++;
+					listView.setVisibility(View.VISIBLE);
+					page.setVisibility(View.VISIBLE);
 					adapter.setListReply(replyContent);
 					adapter.notifyDataSetChanged();
 				}else {	//提示用户获取数据失败
@@ -104,9 +108,11 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
 		rotateAnimation.setInterpolator(new LinearInterpolator());
 		listView=(ListView)findViewById(R.id.list_reply);
+		page=(TextView)findViewById(R.id.page);
 		listView.setOnItemClickListener(this);
 		adapter=new ListReplyAdapter(getApplicationContext());
 		listView.setAdapter(adapter);
+		page.setOnClickListener(this);
 		startProcess();
 		initMenuForListView();
 	}
@@ -115,6 +121,8 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 	 * 开始具体的业务处理
 	 */
 	public void startProcess() {
+		page.setVisibility(View.INVISIBLE);
+		listView.setVisibility(View.GONE);
 		SmthUtils.showLoadingDialog(quanquanLayout,quanquan,quanMsg,rotateAnimation,"正在载入.....");
 		Message msg=Message.obtain();
 		Bundle data=new Bundle();
@@ -172,4 +180,13 @@ public class ListReplyActivity extends Activity implements OnItemClickListener{
 			}
     	});
     }
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.page:
+			startProcess();
+			break;
+		}
+	}
 }

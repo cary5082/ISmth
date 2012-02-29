@@ -21,6 +21,7 @@
         <activity android:name=".ArticleActivity"/>
         <activity android:name=".ListReplyActivity"/>
         <service android:name=".LoginIntentService"/>
+        <service android:name=".LogoutIntentService"/>
     </application>
 
    <uses-permission android:name="android.permission.INTERNET"/>

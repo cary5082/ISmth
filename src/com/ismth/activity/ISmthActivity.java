@@ -200,7 +200,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
     	builder.setTitle("退出应用");
     	builder.setPositiveButton("退出", new OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(DialogInterface dialog, int which) {	
 				dialog.dismiss();
 				finish();
 			}
@@ -220,6 +220,9 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		//退出登录
+        Intent intent=new Intent(this.getApplicationContext(),LogoutIntentService.class);
+        startService(intent);
 		SmthInstance.getInstance().destroyPicMap();
 		ConnectionManagerInstance.getInstance().destroyCookieValue();
 	}
