@@ -52,7 +52,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
+			SmthUtils.hideLoadingDialog(quanMsg, quanquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				list=(List<TodayHotBean>)msg.obj;
@@ -102,7 +102,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
      * 获取十大的内容
      */
     public void getTodayHot(){
-    	SmthUtils.showLoadingDialog(quanquanLayout, quanquan, quanMsg, rotateAnimation, "正在载入...");
+    	SmthUtils.showLoadingDialog(quanquan, quanMsg, rotateAnimation, "正在载入...");
     	Message msg=Message.obtain();
     	msg.what=Constants.TODAYHOT;
     	msg.obj=handler;

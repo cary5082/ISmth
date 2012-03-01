@@ -40,6 +40,7 @@ import com.ismth.adapter.GalleryAdapter;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.BitmapUtils;
 import com.ismth.utils.Constants;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 
@@ -94,7 +95,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					//如果有附件把scrollView高度设为屏幕高度一半
 					scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
 					//如果有附件显示正在加载附件对话框
-					SmthUtils.showLoadingDialog(loadlayout, loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
+					SmthUtils.showLoadingDialog(loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
 				}
 				article.setText(result);
 				Bundle data=msg.getData();
@@ -109,11 +110,11 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				}
 				break;
 			case Constants.CONNECTIONERROR:
-				SmthUtils.hideLoadingDialog(loadlayout, loadquan);
+				SmthUtils.hideLoadingDialog(loadMsg, loadquan);
 				showErrorDialog();
 				break;
 			case Constants.CONNECTIONATTACH:
-				SmthUtils.hideLoadingDialog(loadlayout, loadquan);
+				SmthUtils.hideLoadingDialog(loadMsg, loadquan);
 				int articleId=(Integer)msg.arg1;
 				showGalleryPic(articleId);
 				break;
@@ -258,6 +259,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		bigBitmap=BitmapUtils.Bytes2Bimap(bytearray);
 		BitmapDrawable bd= new BitmapDrawable(ArticleActivity.this.getResources(), bigBitmap);
 		showBigPicFlag=true;
+		loadlayout.setVisibility(View.VISIBLE);
 		bigPic.setBackgroundDrawable(bd);
 		bigPic.setVisibility(View.VISIBLE);
 		gallery.setVisibility(View.GONE);

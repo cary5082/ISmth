@@ -65,7 +65,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
+			SmthUtils.hideLoadingDialog(quanMsg, quanquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				Bundle data=msg.getData();
@@ -133,7 +133,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public void startProcess() {
 		page.setVisibility(View.INVISIBLE);
 		listView.setVisibility(View.GONE);
-		SmthUtils.showLoadingDialog(quanquanLayout,quanquan,quanMsg,rotateAnimation,"正在载入.....");
+		SmthUtils.showLoadingDialog(quanquan,quanMsg,rotateAnimation,"正在载入.....");
 		Message msg=Message.obtain();
 		Bundle data=new Bundle();
 		//如果清除的标志位为真是每次请求新数据把当前页面的跟帖ID清空。之所以要这个变量是因为第一次进入这个页面，会把第一页的跟帖传入，节省流量

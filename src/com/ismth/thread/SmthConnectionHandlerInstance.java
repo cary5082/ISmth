@@ -137,7 +137,7 @@ public class SmthConnectionHandlerInstance {
 					handler.sendMessage(message);
 				}
 				//判断是否有附件，如果有的话去抓取附件
-				if(ab!=null && ab.attachIds!=null && ab.attachIds.size()>0) {
+				if(ab!=null && ab.attachIds!=null && ab.attachIds.size()>0 && id!=null) {
 					getAttachSource(ab.attachIds, bid, id);
 					Message attMessage=Message.obtain();
 					attMessage.what=Constants.CONNECTIONATTACH;
@@ -282,9 +282,9 @@ public class SmthConnectionHandlerInstance {
 		SmthInstance instance=SmthInstance.getInstance();
 		ArrayList<byte[]> linked=new ArrayList<byte[]>();
 		HttpURLConnection conn=null;
-		//根据帖子的ID看看附件数据是否有缓存到本地
-		boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));
 		try {
+			//根据帖子的ID看看附件数据是否有缓存到本地
+			boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));
 			//附件数据没有被缓存，需要从新下载
 			if(!cacheFlag) {
 				for(String str:attachId) {
