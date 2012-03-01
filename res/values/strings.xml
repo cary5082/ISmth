@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, ISmthActivity!</string>
     <string name="app_name">ISmth</string>
-
+	<string name="add_article">发表</string>
 </resources>

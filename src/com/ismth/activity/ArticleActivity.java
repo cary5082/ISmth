@@ -95,13 +95,16 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					//如果有附件显示正在加载附件对话框
 					SmthUtils.showLoadingDialog(loadlayout, loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
 				}
-				reply.setVisibility(View.VISIBLE);
 				article.setText(result);
 				Bundle data=msg.getData();
 				if(data!=null) {
 					replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 					replyUrl=data.getString(Constants.REPLYURLKEY);
 					bid=data.getString(Constants.BIDKEY);
+				}
+				//如果replyIds大于1说明有回帖，此时显示查看回帖的按钮。
+				if(replyIds.size()>1) {
+					reply.setVisibility(View.VISIBLE);
 				}
 				break;
 			case Constants.CONNECTIONERROR:

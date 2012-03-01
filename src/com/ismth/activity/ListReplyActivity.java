@@ -65,10 +65,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			Bundle data=msg.getData();
+			SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
-				SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
+				Bundle data=msg.getData();
 				replyContent=(ArrayList<String>)msg.obj;
 				replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 				data=null;
@@ -83,6 +83,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 				}else {	//提示用户获取数据失败
 					showErrorDialog();
 				}
+				break;
+			case Constants.MAXPAGENUM:
+				page.setVisibility(View.GONE);
+				SmthUtils.showToast(ListReplyActivity.this.getApplicationContext(), "已经是最后一页");
 				break;
 			}
 		}
@@ -168,7 +172,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 				startProcess();
 			}
 		});
-    	builder.setNegativeButton("退出", new OnClickListener() {
+    	builder.setNegativeButton("返回", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -207,7 +211,9 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo menuInfo;
 		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		ISmthLog.d(Constants.TAG, "position is ====="+menuInfo.position+"linked list=="+replyIds.get(menuInfo.position));
+		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+		i.putExtra(Constants.TITLEBAR, titleString);
+		startActivity(i);
 		return true;
 	}
 	

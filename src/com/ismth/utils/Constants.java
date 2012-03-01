@@ -38,6 +38,9 @@ public class Constants {
 	public static final int CONNECTIONERROR=2;
 	//从服务器获取附件
 	public static final int CONNECTIONATTACH=3;
+	//最大分页数
+	public static final int MAXPAGENUM=4;
+	
 	//搜索讨论区
 	public static final int QUERYDISCUSSION=1;
 	//个人信息

@@ -9,9 +9,11 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ismth.bean.ArticleBean;
 
@@ -257,5 +259,23 @@ public class SmthUtils {
 	public static void hideLoadingDialog(View layout,View image) {
 		image.clearAnimation();
 		layout.setVisibility(View.GONE);
+	}
+	
+	/**
+	 * 从主帖URL得到回复帖子的URL，把主帖URL后面的gid替换成reid
+	 * @param url
+	 * @return
+	 */
+	public static String getReplyArticleUrl(String url) {
+		return url.replaceAll("gid", "reid");
+	}
+	
+	/**
+	 * 显示toast
+	 * @param context applicationcontext
+	 * @param content toast要显示的内容
+	 */
+	public static void showToast(Context context,String content) {
+		Toast.makeText(context, content, Toast.LENGTH_LONG).show();
 	}
 }

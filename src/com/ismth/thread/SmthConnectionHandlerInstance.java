@@ -162,25 +162,30 @@ public class SmthConnectionHandlerInstance {
 					}
 				}
 				if(replyIds!=null) {
-					//把集合中的主帖ID删除。
-					replyIds.remove(id);
-					//遍历每个回贴的主ID，获取回帖内容
-					for(String aid:replyIds) {
-						String tu=tempUrl.replaceAll("@id", aid);
-						conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
-						if(conn!=null) {
-							result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-							ab=SmthUtils.getArticleForHtml(result);
-							ll.add(ab.content);
-							ab=null;
-							result=null;
+					//如果replyIds里包含主帖ID，并且页数是第一页，说明是第一次加载回帖
+					if(replyIds.contains(id) && pno==1) {
+						//把集合中的主帖ID删除。
+						replyIds.remove(id);
+						//遍历每个回贴的主ID，获取回帖内容
+						for(String aid:replyIds) {
+							String tu=tempUrl.replaceAll("@id", aid);
+							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
+							if(conn!=null) {
+								result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+								ab=SmthUtils.getArticleForHtml(result);
+								ll.add(ab.content);
+								ab=null;
+								result=null;
+							}
 						}
 					}
+					bundle.putStringArrayList(Constants.REPLYIDKEY, replyIds);
+					message.setData(bundle);
+					message.obj=ll;
+					message.what=Constants.CONNECTIONSUCCESS;
+				}else {			//否则说明页数超过了回帖分页的最大数，此时网站自动跳转到第一页。提醒用户此时是最后一页了
+					message.what=Constants.MAXPAGENUM;
 				}
-				bundle.putStringArrayList(Constants.REPLYIDKEY, replyIds);
-				message.setData(bundle);
-				message.obj=ll;
-				message.what=Constants.CONNECTIONSUCCESS;
 				//通过HANDLER通知主线程UI
 				handler.sendMessage(message);
 				break;
