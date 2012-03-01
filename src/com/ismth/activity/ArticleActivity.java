@@ -17,6 +17,7 @@ import android.os.Message;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.Window;
@@ -403,5 +404,21 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			}
 		});
 	}
+
+	/**
+	 * 选中菜单ITEM后触发
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo menuInfo;
+		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+		i.putExtra(Constants.TITLEBAR, title.getText().toString());
+		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,id,true);
+		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
+		startActivity(i);
+		return true;
+	}
+	
 	
 }

@@ -21,7 +21,6 @@
         <activity android:name=".ArticleActivity"/>
         <activity android:name=".ListReplyActivity"/>
         <activity android:name=".ReplyArticleActivity"/>
-        <service android:name=".LoginIntentService"/>
         <service android:name=".LogoutIntentService"/>
     </application>
 

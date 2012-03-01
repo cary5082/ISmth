@@ -1,22 +1,50 @@
 package com.ismth.activity;
 
-import com.ismth.utils.Constants;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.ismth.thread.SmthConnectionHandlerInstance;
+import com.ismth.utils.ConnectionManagerInstance;
+import com.ismth.utils.Constants;
+import com.ismth.utils.SmthUtils;
 
 /**
  * 回复帖子
  * @author wangjianfeia
  *
  */
-public class ReplyArticleActivity extends Activity{
+public class ReplyArticleActivity extends Activity implements OnClickListener{
 
 	String titleString;
 	TextView title;
+	EditText replyArticle;
+	Button addReply;
+	TextView fbz;
+	//发送的URL
+	String sendUrl;
+	
+	public Handler handler=new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.what) {
+			case Constants.CONNECTIONSUCCESS:
+				SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文成功!");
+				break;
+			case Constants.CONNECTIONERROR:
+				SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文失败!");
+				break;
+			}
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +55,48 @@ public class ReplyArticleActivity extends Activity{
 		Intent intent=getIntent();
 		if(intent!=null) {
 			titleString=intent.getStringExtra(Constants.TITLEBAR);
+			sendUrl=intent.getStringExtra(Constants.SENDARTICLEURLKEY);
 		}
 		title=(TextView)findViewById(R.id.title);
-        title.setText("RE:"+titleString);
+		titleString="RE:"+titleString;
+        title.setText(titleString);
+        replyArticle=(EditText)findViewById(R.id.reply_article);
+        addReply=(Button)findViewById(R.id.add_reply_article);
+        fbz=(TextView)findViewById(R.id.fbz);
+        addReply.setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		//点击发表回复的帖子
+		case R.id.add_reply_article:
+			String cookieValue=ConnectionManagerInstance.getInstance().getCookieValue();
+			addReply.setVisibility(View.GONE);
+			replyArticle.setVisibility(View.GONE);
+			fbz.setVisibility(View.VISIBLE);
+			if(cookieValue.length()==0) {
+				fbz.setText("请先登录。");
+			}else {
+				sendReplyToServer();
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 把回复的帖子发送给服务器
+	 */
+	public void sendReplyToServer(){
+		Message msg=Message.obtain();
+		Bundle data=new Bundle();
+		data.putString(Constants.ARTICLECONTENTKEY, replyArticle.getText().toString());
+		data.putString(Constants.SENDARTICLEURLKEY, sendUrl);
+		data.putString(Constants.SENDTITLEKEY, titleString);
+		msg.setData(data);
+		msg.obj=handler;
+		msg.what=Constants.SENDARTICLE;
+		SmthConnectionHandlerInstance.getInstance().sendMessage(msg);
 	}
 
 }

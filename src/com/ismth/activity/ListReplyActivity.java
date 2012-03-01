@@ -213,6 +213,8 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
 		i.putExtra(Constants.TITLEBAR, titleString);
+		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,replyIds.get(menuInfo.position),true);
+		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
 		startActivity(i);
 		return true;
 	}

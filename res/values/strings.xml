@@ -3,4 +3,5 @@
 
     <string name="app_name">ISmth</string>
 	<string name="add_article">发表</string>
+	<string name="fabiaozhong">已进入发送队列,您可以进行其他操作。</string>
 </resources>

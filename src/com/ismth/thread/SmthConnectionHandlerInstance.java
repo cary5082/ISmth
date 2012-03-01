@@ -14,6 +14,7 @@ import com.ismth.bean.ArticleBean;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.utils.ConnectionManagerInstance;
 import com.ismth.utils.Constants;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 import com.ismth.utils.XmlParserInstance;
@@ -64,7 +65,7 @@ public class SmthConnectionHandlerInstance {
 			//获取十大
 			case Constants.TODAYHOT:
 				//先获取十大帖子字节流
-				conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.TODAYHOTURL, "GET");
+				conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.TODAYHOTURL, "GET",null,null);
 				if(conn!=null){
 					//把字节流转成String字符串
 					result=SmthUtils.getStringForHttp(conn, false, null);
@@ -74,6 +75,9 @@ public class SmthConnectionHandlerInstance {
 					List<TodayHotBean> list=XmlParserInstance.getInstance().readTodayHotBean(result);
 					message.what=Constants.CONNECTIONSUCCESS;
 					message.obj=list;
+					if(list==null) {
+						message.what=Constants.CONNECTIONERROR;
+					}
 				}else {
 					message.what=Constants.CONNECTIONERROR;
 				}
@@ -87,7 +91,7 @@ public class SmthConnectionHandlerInstance {
 				String url=bundle.getString(Constants.BIDURLKEY);
 				id=bundle.getString(Constants.IDKEY);
 				//先从帖子的URL中读取网页内容，从网页内容中获得BID,先拿到字节流
-				conn=ConnectionManagerInstance.getInstance().connectionServer(url, "GET");
+				conn=ConnectionManagerInstance.getInstance().connectionServer(url, "GET",null,null);
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
@@ -106,7 +110,7 @@ public class SmthConnectionHandlerInstance {
 //					String articleUrl="http://www.newsmth.net/bbscon.php?bid=874&id=1792262";
 //					bid="874";
 //					id="1792262";
-					conn=ConnectionManagerInstance.getInstance().connectionServer(articleUrl, "GET");
+					conn=ConnectionManagerInstance.getInstance().connectionServer(articleUrl, "GET",null,null);
 					if(conn!=null) {
 						result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 						ab=SmthUtils.getArticleForHtml(result);
@@ -155,7 +159,7 @@ public class SmthConnectionHandlerInstance {
 				String tempUrl=Constants.ARTICLEURL.replaceAll("@bid", bid);
 				//如果没有回贴主ID，则获取回帖主ID
 				if(replyIds==null) {
-					conn=ConnectionManagerInstance.getInstance().connectionServer(replyUrl, "GET");
+					conn=ConnectionManagerInstance.getInstance().connectionServer(replyUrl, "GET",null,null);
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
 						replyIds=SmthUtils.getReplyId(result);
@@ -169,7 +173,7 @@ public class SmthConnectionHandlerInstance {
 						//遍历每个回贴的主ID，获取回帖内容
 						for(String aid:replyIds) {
 							String tu=tempUrl.replaceAll("@id", aid);
-							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
+							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET",null,null);
 							if(conn!=null) {
 								result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 								ab=SmthUtils.getArticleForHtml(result);
@@ -187,6 +191,22 @@ public class SmthConnectionHandlerInstance {
 					message.what=Constants.MAXPAGENUM;
 				}
 				//通过HANDLER通知主线程UI
+				handler.sendMessage(message);
+				break;
+			//发表和回复帖子给服务器
+			case Constants.SENDARTICLE:
+				bundle=msg.getData();
+				String sendUrl=bundle.getString(Constants.SENDARTICLEURLKEY);
+				String content=bundle.getString(Constants.ARTICLECONTENTKEY);
+				String titleString=bundle.getString(Constants.SENDTITLEKEY);
+				conn=ConnectionManagerInstance.getInstance().connectionServer(sendUrl, "POST", content,titleString);
+				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+				//通过返回的数据中有没有发文成功的字样，来判断发文是否成功。
+				if(result.indexOf("发文成功")>-1) {
+					message.what=Constants.CONNECTIONSUCCESS;
+				}else {
+					message.what=Constants.CONNECTIONERROR;
+				}
 				handler.sendMessage(message);
 				break;
 			}
@@ -231,6 +251,7 @@ public class SmthConnectionHandlerInstance {
 	
 	/**
 	 * 把队列中之前排队的消息删除掉,让当前消息获得最高优先级
+	 * 发送帖子内容在队列中不会被删除
 	 */
 	public void removeBeforeMessage() {
 		myHandler.removeMessages(Constants.TODAYHOT);
@@ -276,7 +297,7 @@ public class SmthConnectionHandlerInstance {
 						int key=Integer.valueOf(str);
 //						attachSource.add(key);
 						//如果没有缓存附件数据，则从网上下载附件
-						conn=ConnectionManagerInstance.getInstance().connectionServer(attachUrl, "GET");
+						conn=ConnectionManagerInstance.getInstance().connectionServer(attachUrl, "GET",null,null);
 						if(conn!=null) {
 							byte[] temp=SmthUtils.getByteArrayForHttp(conn);
 							if(temp!=null && temp.length>0) {

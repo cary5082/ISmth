@@ -18,4 +18,16 @@
             android:layout_gravity="center"
             android:text="@string/add_article"/>
 
+     <LinearLayout android:layout_width="fill_parent"
+         		   android:layout_height="fill_parent"
+         		   android:orientation="vertical"
+         		   android:gravity="center">
+          <TextView android:id="@+id/fbz"
+         	   android:layout_width="wrap_content"
+         	   android:layout_height="wrap_content"
+         	   android:textColor="@color/text_color"
+         	   android:textSize="20dp"
+         	   android:visibility="gone"
+         	   android:text="@string/fabiaozhong"/>
+     </LinearLayout>
 </LinearLayout>

@@ -35,9 +35,10 @@ public class ConnectionManagerInstance {
 	 * 和服务器进行连接
 	 * @param address 需要连接的URL
 	 * @param method 提交服务器的方式，POST或GET
+	 * @param content 要发送给服务器的内容，如果不需要送给则给NULL值
 	 * @return 
 	 */
-	public HttpURLConnection connectionServer(String address,String method) {
+	public HttpURLConnection connectionServer(String address,String method,String content,String title) {
 		HttpURLConnection conn=null;
 		URL url=null;
 		OutputStream os=null;
@@ -61,6 +62,13 @@ public class ConnectionManagerInstance {
 				os.write(sb.toString().getBytes("GBK"));
 			}else if(cookieValue.length()!=0){
 				conn.setRequestProperty("Cookie", cookieValue);
+			}
+			//说明有内容发送给服务器
+			if(content!=null && content.length()>0) {
+				StringBuffer sb = new StringBuffer();
+				sb.append("text=").append(content).append("&title=").append(title);
+				os = conn.getOutputStream();
+				os.write(sb.toString().getBytes("GBK"));
 			}
 			//开始连接服务器
 			conn.connect();
@@ -148,5 +156,9 @@ public class ConnectionManagerInstance {
     
     public void destroyCookieValue(){
     	cookieValue="";
+    }
+    
+    public String getCookieValue(){
+    	return cookieValue;
     }
 }

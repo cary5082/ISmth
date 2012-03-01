@@ -58,7 +58,7 @@ public class PersonInfoActivity extends Activity{
 	 * 提示用户是否保存对话框
 	 */
 	public void showConfirmSave(){
-		AlertDialog.Builder builder=new Builder(getApplicationContext());
+		AlertDialog.Builder builder=new Builder(this);
 		builder.setMessage("是否保存新的用户名或密码。");
 		builder.setTitle("温馨提示：");
 		builder.setPositiveButton("保存", new OnClickListener() {

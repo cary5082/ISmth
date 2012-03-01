@@ -52,19 +52,21 @@ public class SmthUtils {
 	public static ArrayList<String> getReplyId(String html) {
 		ArrayList<String> list=new ArrayList<String>();
 		String temp=html.substring(html.indexOf("o.o")+3, html.length());
-		temp=temp.substring(0,temp.indexOf("o.h()")-1);
-		String[] array=temp.split("]");
-		String result="";
-		for(String str:array) {
-			if(str!=null && str.length()>0 && str.contains(",")) {
-				str=str.replaceAll("\\[", "");
-				if(str.contains("(")) {
-					result=str.substring(1, str.indexOf(","));
-				}else {
-					result=str.substring(1,str.indexOf("'")-1);
+		if(temp.indexOf("o.h()")>-1) {
+			temp=temp.substring(0,temp.indexOf("o.h()")-1);
+			String[] array=temp.split("]");
+			String result="";
+			for(String str:array) {
+				if(str!=null && str.length()>0 && str.contains(",")) {
+					str=str.replaceAll("\\[", "");
+					if(str.contains("(")) {
+						result=str.substring(1, str.indexOf(","));
+					}else {
+						result=str.substring(1,str.indexOf("'")-1);
+					}
+					list.add(result);
 				}
-				list.add(result);
-			}
+			}			
 		}
 		return list;
 	}
@@ -261,13 +263,27 @@ public class SmthUtils {
 		layout.setVisibility(View.GONE);
 	}
 	
+	
 	/**
 	 * 从主帖URL得到回复帖子的URL，把主帖URL后面的gid替换成reid
-	 * @param url
+	 * @param url 
+	 * @param reid 回复帖子的ID
+	 * @param isReply 是新发帖子还是回复帖子。TRUE为回复，
 	 * @return
 	 */
-	public static String getReplyArticleUrl(String url) {
-		return url.replaceAll("gid", "reid");
+	public static String getReplyArticleUrl(String url,String reid,boolean isReply) {
+		try {
+			String[] temp=url.split("&");
+			String[] temp2=temp[0].split("\\?");
+			url=Constants.SENDNEWARTICLEURL+temp2[1];
+			//如果为新发帖子。则不用后面的GID
+			if(isReply) {
+				url+="&reid="+reid;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return url;
 	}
 	
 	/**

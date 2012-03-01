@@ -26,12 +26,17 @@ public class Constants {
 	public static final int ARTICLE=2;
 	//查看回帖
 	public static final int LISTREPLY=3;
+	//发送帖子内容给服务器
+	public static final int SENDARTICLE=4;
+	
 	//十大的RSSURL
 	public static final String TODAYHOTURL="http://www.newsmth.net/rssi.php?h=1";
 	//文章主贴的链接@bid,@id会在发起链接时替换成相应的参数
 	public static  String ARTICLEURL="http://www.newsmth.net/bbscon.php?bid=@bid&id=@id";
 	//文章附件的链接@bid,@id,@attachid会在发起链接时替换成相应的参数
 	public static String ATTACHURL="http://att.newsmth.net/att.php?p.@bid.@id.@attachid.jpg";
+	//新发文章或回帖的URL
+	public static String SENDNEWARTICLEURL="http://www.newsmth.net/bbssnd.php?";
 	//服务器通信成功
 	public static final int CONNECTIONSUCCESS=1;
 	//服务器通信出错
@@ -40,7 +45,10 @@ public class Constants {
 	public static final int CONNECTIONATTACH=3;
 	//最大分页数
 	public static final int MAXPAGENUM=4;
-	
+	//登录成功KEY
+	public static final int LOGINSUCCESSKEY=5;
+	//登录失败KEY
+	public static final int LOGINFAILKEY=6;
 	//搜索讨论区
 	public static final int QUERYDISCUSSION=1;
 	//个人信息
@@ -71,5 +79,12 @@ public class Constants {
 	public static final String PNOKEY="pnokey";
 	
 	public static final String ARTICLEBUNDLE="articleBundle";
-	
+	//帖子内容的KEY
+	public static final String ARTICLECONTENTKEY="article_content_key";
+	//帖子内容发送的URL
+	public static final String SENDARTICLEURLKEY="send_article_url_key";
+	//回复帖子标题
+	public static final String SENDTITLEKEY="send_title_key";
+	//十大主题的回调handler的key
+	public static final String TODAYHOTHANDLERKEY="today_hot_handler_key";
 }

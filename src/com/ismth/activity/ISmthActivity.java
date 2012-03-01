@@ -5,7 +5,6 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,13 +22,13 @@ import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ismth.adapter.TodayHotAdapter;
 import com.ismth.bean.TodayHotBean;
+import com.ismth.thread.LoginAsyncTask;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.ConnectionManagerInstance;
 import com.ismth.utils.Constants;
@@ -49,6 +47,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	private TodayHotAdapter todayHotAdapter;
 	private List<TodayHotBean>list;
 	private TextView title;
+
 	
 	public Handler handler=new Handler(){
 		@Override
@@ -61,6 +60,12 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 				break;
 			case Constants.CONNECTIONERROR:
 				showErrorDialog();
+				break;
+			case Constants.LOGINSUCCESSKEY:
+				SmthUtils.showToast(ISmthActivity.this.getApplicationContext(), "登录成功!");
+				break;
+			case Constants.LOGINFAILKEY:
+				SmthUtils.showToast(ISmthActivity.this.getApplicationContext(), "登录失败!");
 				break;
 			}
 		}
@@ -85,8 +90,9 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 		listView.setOnItemClickListener(this);
 		SharePreferencesUtils.setContext(this.getApplicationContext());
         //登录
-        Intent intent=new Intent(this.getApplicationContext(),LoginIntentService.class);
-        startService(intent);
+		LoginAsyncTask login=new LoginAsyncTask();
+		login.setContext(getApplicationContext());
+		login.execute(null);
         //获取十大的内容
         SmthConnectionHandlerInstance.getInstance().startThread();
         getTodayHot();
