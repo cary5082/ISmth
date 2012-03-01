@@ -1,5 +1,6 @@
 package com.ismth.activity;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -70,7 +71,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	
 	LinearLayout topbarline;
 	//跟贴ID集合
-	LinkedList<String> replyIds;
+	ArrayList<String> replyIds;
 	//获取下一页帖子的URL;
 	String replyUrl;
 	TextView reply;
@@ -99,7 +100,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				article.setText(result);
 				Bundle data=msg.getData();
 				if(data!=null) {
-					replyIds=(LinkedList)data.getSerializable(Constants.REPLYIDKEY);
+					replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 					replyUrl=data.getString(Constants.REPLYURLKEY);
 					bid=data.getString(Constants.BIDKEY);
 				}
@@ -377,20 +378,11 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		//点击查看回帖按扭
 		case R.id.reply:
 			Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
-			Bundle data=new Bundle();
-			data.putString(Constants.IDKEY, id);
-			data.putString(Constants.BIDKEY, bid);
-			data.putString(Constants.TITLEBAR, title.getText().toString());
-			data.putString(Constants.REPLYURLKEY, replyUrl);
-			data.putSerializable(Constants.REPLYIDKEY, replyIds);
-			intent.putExtra(Constants.ARTICLEBUNDLE, data);
-			data=null;
-			
-//			intent.putExtra(Constants.REPLYIDKEY, replyIds);
-//			intent.putExtra(Constants.REPLYURLKEY, replyUrl);
-//			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
-//			intent.putExtra(Constants.BIDKEY, bid);
-//			intent.putExtra(Constants.IDKEY, id);
+			intent.putStringArrayListExtra(Constants.REPLYIDKEY, replyIds);
+			intent.putExtra(Constants.REPLYURLKEY, replyUrl);
+			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
+			intent.putExtra(Constants.BIDKEY, bid);
+			intent.putExtra(Constants.IDKEY, id);
 			startActivity(intent);
 			finish();
 			break;

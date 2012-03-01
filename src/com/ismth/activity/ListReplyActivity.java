@@ -1,5 +1,6 @@
 package com.ismth.activity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import android.app.Activity;
@@ -47,7 +48,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	private ListView listView;
 	private TextView title;
 	//跟贴ID集合
-	LinkedList<String> replyIds=null;
+	ArrayList<String> replyIds=null;
 	//回帖的内容
 	LinkedList<String> replyContent=new LinkedList<String>();
 	//获取下一页帖子的URL;
@@ -70,7 +71,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 			case Constants.CONNECTIONSUCCESS:
 				SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
 				replyContent=(LinkedList<String>)msg.obj;
-				replyIds=(LinkedList)data.getSerializable(Constants.REPLYIDKEY);
+				replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 				data=null;
 				//说明获取数据正确
 				if(replyContent.size()>0) {
@@ -99,17 +100,11 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
         //获取上入页面跳转过来通过intent传入的值
         Intent intent=getIntent();
         if(intent!=null) {
-        	Bundle data=intent.getBundleExtra(Constants.ARTICLEBUNDLE);
-        	replyIds=(LinkedList<String>)data.getSerializable(Constants.REPLYIDKEY);
-        	replyUrl=data.getString(Constants.REPLYURLKEY);
-        	titleString=data.getString(Constants.TITLEBAR);
-        	bid=data.getString(Constants.BIDKEY);
-        	id=data.getString(Constants.IDKEY);
-//        	replyIds=(LinkedList<String>)intent.getSerializableExtra(Constants.REPLYIDKEY);
-//        	replyUrl=intent.getStringExtra(Constants.REPLYURLKEY);
-//        	titleString=intent.getStringExtra(Constants.TITLEBAR);
-//        	bid=intent.getStringExtra(Constants.BIDKEY);
-//        	id=intent.getStringExtra(Constants.IDKEY);
+        	replyIds=intent.getStringArrayListExtra(Constants.REPLYIDKEY);
+        	replyUrl=intent.getStringExtra(Constants.REPLYURLKEY);
+        	titleString=intent.getStringExtra(Constants.TITLEBAR);
+        	bid=intent.getStringExtra(Constants.BIDKEY);
+        	id=intent.getStringExtra(Constants.IDKEY);
         }
         title=(TextView)findViewById(R.id.title);
         title.setText(titleString);
@@ -142,7 +137,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		if(clearReplyIds) {
 			replyIds=null;
 		}
-		data.putSerializable(Constants.REPLYIDKEY, replyIds);
+		data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
 		data.putString(Constants.REPLYURLKEY, replyUrl);
 		data.putInt(Constants.PNOKEY, pno);
 		data.putString(Constants.BIDKEY, bid);

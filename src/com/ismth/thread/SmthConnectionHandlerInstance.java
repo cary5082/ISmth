@@ -95,10 +95,9 @@ public class SmthConnectionHandlerInstance {
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
-						LinkedList<String>replyIds=SmthUtils.getReplyId(result);
+						ArrayList<String>replyIds=SmthUtils.getReplyId(result);
 						Bundle data=new Bundle();
-						data.putSerializable(Constants.REPLYIDKEY, replyIds);
-//						data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
+						data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
 						data.putString(Constants.REPLYURLKEY, url);
 						bid=SmthUtils.getBidForHtml(result);
 						data.putString(Constants.BIDKEY,bid);
@@ -151,7 +150,7 @@ public class SmthConnectionHandlerInstance {
 				LinkedList<String> ll=new LinkedList<String>();
 				bundle=msg.getData();
 				//回帖的主ID
-				LinkedList<String> replyIds=(LinkedList<String>)bundle.getSerializable(Constants.REPLYIDKEY);
+				ArrayList<String> replyIds=(ArrayList<String>)bundle.getSerializable(Constants.REPLYIDKEY);
 				bid=bundle.getString(Constants.BIDKEY);
 				int pno=bundle.getInt(Constants.PNOKEY);
 				id=bundle.getString(Constants.IDKEY);
@@ -167,22 +166,22 @@ public class SmthConnectionHandlerInstance {
 					}
 				}
 				if(replyIds!=null) {
+					//把集合中的主帖ID删除。
+					replyIds.remove(id);
 					//遍历每个回贴的主ID，获取回帖内容
 					for(String aid:replyIds) {
-						if(!aid.equals(id)) {
-							String tu=tempUrl.replaceAll("@id", aid);
-							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
-							if(conn!=null) {
-								result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-								ab=SmthUtils.getArticleForHtml(result);
-								ll.add(ab.content);
-								ab=null;
-								result=null;
-							}
+						String tu=tempUrl.replaceAll("@id", aid);
+						conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET");
+						if(conn!=null) {
+							result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+							ab=SmthUtils.getArticleForHtml(result);
+							ll.add(ab.content);
+							ab=null;
+							result=null;
 						}
 					}
 				}
-				bundle.putSerializable(Constants.REPLYIDKEY, replyIds);
+				bundle.putStringArrayList(Constants.REPLYIDKEY, replyIds);
 				message.setData(bundle);
 				message.obj=ll;
 				message.what=Constants.CONNECTIONSUCCESS;

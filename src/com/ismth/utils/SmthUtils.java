@@ -48,8 +48,8 @@ public class SmthUtils {
 	 * @param html
 	 * @return
 	 */
-	public static LinkedList<String> getReplyId(String html) {
-		LinkedList<String> list=new LinkedList<String>();
+	public static ArrayList<String> getReplyId(String html) {
+		ArrayList<String> list=new ArrayList<String>();
 		String temp=html.substring(html.indexOf("o.o")+3, html.length());
 		temp=temp.substring(0,temp.indexOf("o.h()")-1);
 		String[] array=temp.split("]");
