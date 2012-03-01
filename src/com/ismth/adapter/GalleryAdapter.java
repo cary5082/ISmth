@@ -1,8 +1,6 @@
 package com.ismth.adapter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +12,6 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
 
 /**
  * Gallery适配器
@@ -24,7 +21,7 @@ import com.ismth.utils.ISmthLog;
  */
 public class GalleryAdapter extends BaseAdapter{
 
-	private LinkedList<Bitmap> list=new LinkedList<Bitmap>();
+	private ArrayList<Bitmap> list=new ArrayList<Bitmap>();
 	
 	private Context context;
 	

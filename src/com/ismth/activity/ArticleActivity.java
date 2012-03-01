@@ -2,7 +2,6 @@ package com.ismth.activity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -198,7 +197,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
      */
     public void showGalleryPic(int articleId) {
     	SmthInstance instance=SmthInstance.getInstance();
-    	LinkedList<byte[]> list=instance.getPicMapValue(articleId);
+    	ArrayList<byte[]> list=instance.getPicMapValue(articleId);
     	try {
     		if(adapter!=null){
         		adapter.setArticleId(articleId);
@@ -250,7 +249,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
 		SmthInstance instance=SmthInstance.getInstance();
 		int articleId=adapter.getArticleId();
-		LinkedList<byte[]> ll=instance.getPicMapValue(articleId);
+		ArrayList<byte[]> ll=instance.getPicMapValue(articleId);
 		byte[] bytearray=ll.get(position);
 		bigBitmap=BitmapUtils.Bytes2Bimap(bytearray);
 		BitmapDrawable bd= new BitmapDrawable(ArticleActivity.this.getResources(), bigBitmap);
@@ -324,7 +323,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 */
 	public void addItemToAdapterList(int position,int articleId) {
 		SmthInstance instance=SmthInstance.getInstance();
-		LinkedList<byte[]> list=instance.getPicMapValue(articleId);
+		ArrayList<byte[]> list=instance.getPicMapValue(articleId);
 		Object o=adapter.getItem(position);
 		Bitmap bm=null;
 		if(o==null) {

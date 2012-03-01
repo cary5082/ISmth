@@ -1,7 +1,6 @@
 package com.ismth.activity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -50,7 +49,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	//跟贴ID集合
 	ArrayList<String> replyIds=null;
 	//回帖的内容
-	LinkedList<String> replyContent=new LinkedList<String>();
+	ArrayList<String> replyContent=new ArrayList<String>();
 	//获取下一页帖子的URL;
 	String replyUrl;
 	String titleString;
@@ -70,7 +69,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				SmthUtils.hideLoadingDialog(quanquanLayout, quanquan);
-				replyContent=(LinkedList<String>)msg.obj;
+				replyContent=(ArrayList<String>)msg.obj;
 				replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
 				data=null;
 				//说明获取数据正确

@@ -2,10 +2,7 @@ package com.ismth.thread;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +14,6 @@ import com.ismth.bean.ArticleBean;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.utils.ConnectionManagerInstance;
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 import com.ismth.utils.XmlParserInstance;
@@ -147,7 +143,7 @@ public class SmthConnectionHandlerInstance {
 				break;
 			//获取回帖
 			case Constants.LISTREPLY:
-				LinkedList<String> ll=new LinkedList<String>();
+				ArrayList<String> ll=new ArrayList<String>();
 				bundle=msg.getData();
 				//回帖的主ID
 				ArrayList<String> replyIds=(ArrayList<String>)bundle.getSerializable(Constants.REPLYIDKEY);
@@ -258,7 +254,7 @@ public class SmthConnectionHandlerInstance {
 	public void getAttachSource(List<String> attachId,String bid,String id) {
 		String tempUrl=Constants.ATTACHURL.replaceAll("@bid", bid).replaceAll("@id", id);
 		SmthInstance instance=SmthInstance.getInstance();
-		LinkedList<byte[]> linked=new LinkedList<byte[]>();
+		ArrayList<byte[]> linked=new ArrayList<byte[]>();
 		HttpURLConnection conn=null;
 		//根据帖子的ID看看附件数据是否有缓存到本地
 		boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));

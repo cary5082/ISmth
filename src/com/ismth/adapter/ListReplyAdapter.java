@@ -1,8 +1,6 @@
 package com.ismth.adapter;
 
-import java.util.LinkedList;
-
-import com.ismth.activity.R;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ismth.activity.R;
+
 public class ListReplyAdapter extends BaseAdapter{
 
-	private LinkedList<String> listReply=new LinkedList<String>();
+	private ArrayList<String> listReply=new ArrayList<String>();
 	private Context context;
 	private TextView content;
 	
@@ -46,7 +46,7 @@ public class ListReplyAdapter extends BaseAdapter{
 		return convertView;
 	}
 
-	public void setListReply(LinkedList<String> list) {
+	public void setListReply(ArrayList<String> list) {
 		listReply=list;
 		list=null;
 	}

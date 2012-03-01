@@ -1,6 +1,6 @@
 package com.ismth.utils;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -13,8 +13,8 @@ public class SmthInstance {
 
 	private static SmthInstance instance=new SmthInstance();
 	
-	//缓存附件的内容，KEY为贴子的ID，LINKEDLIST里放在是图片
-	private ConcurrentHashMap<Integer,LinkedList<byte[]>> picMap=new ConcurrentHashMap<Integer,LinkedList<byte[]>>();
+	//缓存附件的内容，KEY为贴子的ID，ARRAYLIST里放在是图片
+	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
 	
 	private SmthInstance(){};
 	
@@ -25,7 +25,7 @@ public class SmthInstance {
 		return instance;
 	}
 	
-	public ConcurrentHashMap<Integer,LinkedList<byte[]>> getConHashMap(){
+	public ConcurrentHashMap<Integer,ArrayList<byte[]>> getConHashMap(){
 		return picMap;
 	}
 	
@@ -44,7 +44,7 @@ public class SmthInstance {
 	 */
 	public int getPicMapValueSize(int key) {
 		int size=0;
-		LinkedList<byte[]> list=picMap.get(key);
+		ArrayList<byte[]> list=picMap.get(key);
 		if(list!=null) {
 			size=list.size();
 		}
@@ -56,7 +56,7 @@ public class SmthInstance {
 	 * @param key picmap中的key
 	 * @return
 	 */
-	public LinkedList<byte[]> getPicMapValue(int key) {
+	public ArrayList<byte[]> getPicMapValue(int key) {
 		return picMap.get(key);
 	}
 	
@@ -65,7 +65,7 @@ public class SmthInstance {
 	 * @param key 
 	 * @param value
 	 */
-	public void addItemToPicMap(int key,LinkedList<byte[]> value) {
+	public void addItemToPicMap(int key,ArrayList<byte[]> value) {
 		picMap.put(key, value);
 	}
 	
