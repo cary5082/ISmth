@@ -248,6 +248,8 @@ public class SmthUtils {
 	 * @param str 加载文本
 	 */
 	public static void showLoadingDialog(View image,TextView textView,Animation ani,String str) {
+		image.setVisibility(View.VISIBLE);
+		textView.setVisibility(View.VISIBLE);
 		textView.setText(str);
 		image.startAnimation(ani);
 	}

@@ -84,6 +84,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
+			SmthUtils.hideLoadingDialog(loadMsg, loadquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				String result=(String)msg.obj;
@@ -110,11 +111,9 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				}
 				break;
 			case Constants.CONNECTIONERROR:
-				SmthUtils.hideLoadingDialog(loadMsg, loadquan);
 				showErrorDialog();
 				break;
 			case Constants.CONNECTIONATTACH:
-				SmthUtils.hideLoadingDialog(loadMsg, loadquan);
 				int articleId=(Integer)msg.arg1;
 				showGalleryPic(articleId);
 				break;
