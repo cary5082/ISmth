@@ -12,6 +12,7 @@ import java.util.List;
 import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -247,20 +248,23 @@ public class SmthUtils {
 	 * @param ani 加载动画
 	 * @param str 加载文本
 	 */
-	public static void showLoadingDialog(View image,TextView textView,Animation ani,String str) {
+	public static void showLoadingDialog(RelativeLayout layout,View image,TextView textView,Animation ani,String str) {
 		image.setVisibility(View.VISIBLE);
 		textView.setVisibility(View.VISIBLE);
+		layout.setVisibility(View.VISIBLE);
 		textView.setText(str);
 		image.startAnimation(ani);
 	}
 	
 	/**
 	 * 隐藏加载对话框
+	 * @param layout
 	 * @param textView
 	 * @param image
 	 */
-	public static void hideLoadingDialog(TextView textView,View image) {
+	public static void hideLoadingDialog(RelativeLayout layout,TextView textView,View image) {
 		image.clearAnimation();
+		layout.setVisibility(View.GONE);
 		image.setVisibility(View.GONE);
 		textView.setVisibility(View.GONE);
 	}

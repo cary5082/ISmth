@@ -84,7 +84,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			SmthUtils.hideLoadingDialog(loadMsg, loadquan);
+			SmthUtils.hideLoadingDialog(loadlayout, loadMsg, loadquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				String result=(String)msg.obj;
@@ -96,7 +96,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 					//如果有附件把scrollView高度设为屏幕高度一半
 					scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
 					//如果有附件显示正在加载附件对话框
-					SmthUtils.showLoadingDialog(loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
+					SmthUtils.showLoadingDialog(loadlayout,loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
 				}
 				article.setText(result);
 				Bundle data=msg.getData();

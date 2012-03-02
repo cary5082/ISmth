@@ -52,7 +52,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			SmthUtils.hideLoadingDialog(quanMsg, quanquan);
+			SmthUtils.hideLoadingDialog(quanquanLayout, quanMsg, quanquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				list=(List<TodayHotBean>)msg.obj;
@@ -102,7 +102,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
      * 获取十大的内容
      */
     public void getTodayHot(){
-    	SmthUtils.showLoadingDialog(quanquan, quanMsg, rotateAnimation, "正在载入...");
+    	SmthUtils.showLoadingDialog(quanquanLayout, quanquan, quanMsg, rotateAnimation, "正在载入...");
     	Message msg=Message.obtain();
     	msg.what=Constants.TODAYHOT;
     	msg.obj=handler;
@@ -114,7 +114,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
      * @param list listView里的值
      */
     public void setListViewByTodayHot(List<TodayHotBean> list) {
-    	todayHotAdapter=new TodayHotAdapter(this.getApplicationContext(),list);
+    	todayHotAdapter=new TodayHotAdapter(getApplicationContext(),list);
 		listView.setAdapter(todayHotAdapter);
 		list=null;
 		todayHotAdapter=null;
@@ -122,7 +122,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-		Intent intent=new Intent(this.getApplicationContext(),ArticleActivity.class);
+		Intent intent=new Intent(getApplicationContext(),ArticleActivity.class);
 		TodayHotBean thb=(TodayHotBean)parent.getItemAtPosition(position);
 		intent.putExtra(Constants.BIDURLKEY, thb.link);
 		intent.putExtra(Constants.TITLEBAR, thb.title);
