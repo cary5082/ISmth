@@ -63,13 +63,11 @@ public class ConnectionManagerInstance {
 				sb.append("id=").append(username).append("&passwd=").append(password);
 				os = conn.getOutputStream();
 				os.write(sb.toString().getBytes("GBK"));
-				ISmthLog.d(Constants.TAG, "send username to server");
 			}else if(cookieValue.length()!=0){
 				conn.setRequestProperty("Cookie", cookieValue);
 			}
 			//说明有内容发送给服务器
 			if(content!=null && content.length()>0) {
-				ISmthLog.d(Constants.TAG, "send article Content to server");
 				StringBuffer sb = new StringBuffer();
 				sb.append("text=").append(content).append("&title=").append(title);
 				os = conn.getOutputStream();
