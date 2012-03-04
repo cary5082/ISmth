@@ -58,7 +58,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	String bid;
 	ListReplyAdapter adapter;
 	String id;
-	TextView page;
+	//下一页
+	TextView nextpage;
+	//上一页
+	TextView prepage;
 	//是否清空replyIds里的数据
 	boolean clearReplyIds=false;
 	
@@ -67,7 +70,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		public void handleMessage(Message msg) {
 			SmthUtils.hideLoadingDialog(quanquanLayout, quanMsg, quanquan);
 			listView.setVisibility(View.VISIBLE);
-			page.setVisibility(View.VISIBLE);
+			nextpage.setVisibility(View.VISIBLE);
+			if(pno>1) {
+				prepage.setVisibility(View.VISIBLE);
+			}
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				Bundle data=msg.getData();
@@ -77,7 +83,6 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 				//说明获取数据正确
 				if(replyContent.size()>0) {
 					clearReplyIds=true;
-					pno++;
 					adapter.setListReply(replyContent);
 					adapter.notifyDataSetChanged();
 				}else {	//提示用户获取数据失败
@@ -117,11 +122,13 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
 		rotateAnimation.setInterpolator(new LinearInterpolator());
 		listView=(ListView)findViewById(R.id.list_reply);
-		page=(TextView)findViewById(R.id.page);
+		nextpage=(TextView)findViewById(R.id.nextpage);
+		prepage=(TextView)findViewById(R.id.prepage);
 		listView.setOnItemClickListener(this);
 		adapter=new ListReplyAdapter(getApplicationContext());
 		listView.setAdapter(adapter);
-		page.setOnClickListener(this);
+		nextpage.setOnClickListener(this);
+		prepage.setOnClickListener(this);
 		startProcess();
 		initMenuForListView();
 	}
@@ -130,7 +137,8 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	 * 开始具体的业务处理
 	 */
 	public void startProcess() {
-		page.setVisibility(View.INVISIBLE);
+		nextpage.setVisibility(View.INVISIBLE);
+		prepage.setVisibility(View.INVISIBLE);
 		listView.setVisibility(View.GONE);
 //		SmthUtils.showLoadingDialog(quanquan,quanMsg,rotateAnimation,"正在载入.....");
 		SmthUtils.showLoadingDialog(quanquanLayout,quanquan,quanMsg,rotateAnimation,"正在载入.....");
@@ -198,7 +206,13 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
-		case R.id.page:
+		case R.id.nextpage:
+			//页数加1
+			pno++;
+			startProcess();
+			break;
+		case R.id.prepage:
+			pno--;
 			startProcess();
 			break;
 		}

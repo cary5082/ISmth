@@ -116,7 +116,7 @@ public class SmthUtils {
 			}
 			if(articleContent!=null) {
 				articleContent=articleContent.replaceAll("\\\\", "");
-				articleContent=articleContent.replaceAll("n", "\n");
+//				articleContent=articleContent.replaceAll("n", "\n");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

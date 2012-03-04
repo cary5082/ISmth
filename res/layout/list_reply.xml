@@ -5,7 +5,7 @@
     android:orientation="vertical" 
     android:background="@drawable/loading_bg">
 
-    <LinearLayout android:layout_width="fill_parent"
+<!--     <LinearLayout android:layout_width="fill_parent"
     			  android:layout_height="wrap_content"
     			  android:orientation="horizontal">
     			  
@@ -16,14 +16,37 @@
     	    	  android:layout_gravity="left"
     	    	  android:text="上一页"/>
        
-    	<TextView android:id="@+id/page"
+    	<TextView android:id="@+id/nextpage"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
         	    android:textColor="@color/text_color"
         	    android:visibility="invisible"
         	    android:layout_gravity="right"
         	    android:text="下一页"/>
-    </LinearLayout>
+    </LinearLayout> -->
+    
+    
+    <RelativeLayout android:layout_width="wrap_content"
+        			android:layout_height="wrap_content">
+         <TextView android:id="@+id/prepage"
+    	    	  android:layout_width="76dp"
+    	    	  android:layout_height="wrap_content"
+    	    	  android:textColor="@color/text_color"
+    	    	  android:layout_alignParentLeft="true"
+    	    	  android:visibility="invisible"
+    	    	  android:gravity="center"
+    	    	  android:text="上一页"/>
+         
+         <TextView android:id="@+id/nextpage"
+    	        android:layout_width="76dp"
+    	        android:layout_height="wrap_content"
+        	    android:textColor="@color/text_color"
+        	    android:visibility="invisible"
+        	    android:gravity="center"
+        	   	android:layout_alignParentRight="true"
+        	    android:text="下一页"/>
+         
+    </RelativeLayout>
     
     <LinearLayout
         android:layout_width="fill_parent"
