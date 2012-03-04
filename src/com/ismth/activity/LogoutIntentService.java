@@ -17,6 +17,7 @@ public class LogoutIntentService extends IntentService{
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		ISmthLog.d(Constants.TAG, "logout====");
 		HttpURLConnection conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.LOGOUTURL, "GET",null,null);
 		if(conn!=null) {
 			conn.disconnect();

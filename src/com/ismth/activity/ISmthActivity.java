@@ -229,8 +229,7 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 		//退出登录
         Intent intent=new Intent(this.getApplicationContext(),LogoutIntentService.class);
         startService(intent);
-		SmthInstance.getInstance().destroyPicMap();
-		ConnectionManagerInstance.getInstance().destroyCookieValue();
+		SmthInstance.getInstance().destroyCommonObject();
 	}
 	
 	

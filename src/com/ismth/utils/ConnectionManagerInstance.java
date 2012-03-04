@@ -21,12 +21,15 @@ public class ConnectionManagerInstance {
 
 	private ConnectionManagerInstance(){};
 	
-	private static final ConnectionManagerInstance instance=new ConnectionManagerInstance();
+	private static ConnectionManagerInstance instance=null;
 	
 	//把登录成功后的COOKIE记录放到此变量中
 	private static String cookieValue="";
 	
-	public static ConnectionManagerInstance getInstance(){
+	public static synchronized ConnectionManagerInstance getInstance(){
+		if(instance==null) {
+			instance=new ConnectionManagerInstance();
+		}
 		return instance;
 	}
 	
@@ -60,11 +63,13 @@ public class ConnectionManagerInstance {
 				sb.append("id=").append(username).append("&passwd=").append(password);
 				os = conn.getOutputStream();
 				os.write(sb.toString().getBytes("GBK"));
+				ISmthLog.d(Constants.TAG, "send username to server");
 			}else if(cookieValue.length()!=0){
 				conn.setRequestProperty("Cookie", cookieValue);
 			}
 			//说明有内容发送给服务器
 			if(content!=null && content.length()>0) {
+				ISmthLog.d(Constants.TAG, "send article Content to server");
 				StringBuffer sb = new StringBuffer();
 				sb.append("text=").append(content).append("&title=").append(title);
 				os = conn.getOutputStream();
@@ -154,11 +159,12 @@ public class ConnectionManagerInstance {
 		return sb.toString();
     }
     
-    public void destroyCookieValue(){
-    	cookieValue="";
-    }
-    
     public String getCookieValue(){
     	return cookieValue;
+    }
+    
+    public void destroy(){
+    	cookieValue="";
+    	instance=null;
     }
 }

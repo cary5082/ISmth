@@ -37,9 +37,12 @@ public class SmthConnectionHandlerInstance {
 	
 	private SmthConnectionHandlerInstance(){};
 	
-	private static SmthConnectionHandlerInstance instance=new SmthConnectionHandlerInstance();
+	private static SmthConnectionHandlerInstance instance=null;
 	
-	public static SmthConnectionHandlerInstance getInstance(){
+	public static synchronized SmthConnectionHandlerInstance getInstance(){
+		if(instance==null) {
+			instance=new SmthConnectionHandlerInstance();
+		}
 		return instance;
 	}
 	
@@ -235,6 +238,7 @@ public class SmthConnectionHandlerInstance {
 		}
 		handlerThread=null;
 		myHandler=null;
+		instance=null;
 	}
 	
 	/**
@@ -314,4 +318,5 @@ public class SmthConnectionHandlerInstance {
 			e.printStackTrace();
 		}
 	}
+	
 }

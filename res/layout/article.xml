@@ -43,8 +43,10 @@
         	 android:layout_height="wrap_content"
         	 />    
         	 
-    <RelativeLayout android:layout_width="fill_parent"
+    <RelativeLayout android:id="@+id/bigpic_layout"
+        			android:layout_width="fill_parent"
         			android:layout_height="fill_parent"
+        			android:visibility="gone"
         			android:layout_centerInParent="true">
     
 	    <ImageView android:id="@+id/bigpic"

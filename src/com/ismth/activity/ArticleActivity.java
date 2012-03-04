@@ -54,6 +54,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 
 	TextView article;
 	private RelativeLayout loadlayout; 
+	private RelativeLayout bigpic_layout;
 	private ImageView loadquan; 
 	private TextView loadMsg; 
 	private Animation rotateAnimation;
@@ -140,6 +141,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		gallery=(Gallery)findViewById(R.id.gallery);
 		scroll=(ScrollView)findViewById(R.id.scroll);
 		bigPic=(ImageView)findViewById(R.id.bigpic);
+		bigpic_layout=(RelativeLayout)findViewById(R.id.bigpic_layout);
 		reply=(TextView)findViewById(R.id.reply);
 		adapter=new GalleryAdapter(getApplicationContext());
 		gallery.setAdapter(adapter);
@@ -175,6 +177,8 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				bundle.putString(Constants.IDKEY, id);
 				message.setData(bundle);
 				SmthConnectionHandlerInstance.getInstance().sendMessage(message);
+			}else {
+				showErrorDialog();
 			}
 		}
 	}
@@ -261,6 +265,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		loadlayout.setVisibility(View.VISIBLE);
 		bigPic.setBackgroundDrawable(bd);
 		bigPic.setVisibility(View.VISIBLE);
+		bigpic_layout.setVisibility(View.VISIBLE);
 		gallery.setVisibility(View.GONE);
 		article.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
@@ -356,6 +361,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			//正在显示大图，按back键此时处理为回到普通模式
 			if(showBigPicFlag) {
 				bigPic.setVisibility(View.GONE);
+				bigpic_layout.setVisibility(View.GONE);
 				article.setVisibility(View.VISIBLE);
 				gallery.setVisibility(View.VISIBLE);
 				scroll.setVisibility(View.VISIBLE);

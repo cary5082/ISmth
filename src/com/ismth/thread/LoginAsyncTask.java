@@ -25,9 +25,11 @@ public class LoginAsyncTask extends AsyncTask<String,Integer,String>{
 		String userName=SharePreferencesUtils.getString(Constants.USERNAME, "");
 		String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 		if(!"".equals(userName) && !"".equals(password)) {
+			ISmthLog.d(Constants.TAG, "username=="+userName+"==password=="+password);
 			HttpURLConnection conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.LOGINURL, "POST",null,null);
 			if(conn!=null) {
 				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
+				ISmthLog.d(Constants.TAG, "====result==="+result);
 			}else {		//用空和NULL来区别是否执行登录操作。
 				result="";
 			}

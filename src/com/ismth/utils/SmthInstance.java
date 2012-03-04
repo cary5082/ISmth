@@ -3,6 +3,8 @@ package com.ismth.utils;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.ismth.thread.SmthConnectionHandlerInstance;
+
 /**
  * 存放公用变量
  *@Time:2012-2-16
@@ -11,17 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmthInstance {
 
-	private static SmthInstance instance=new SmthInstance();
+	private static SmthInstance instance=null;
 	
 	//缓存附件的内容，KEY为贴子的ID，ARRAYLIST里放在是图片
 	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
 	
 	private SmthInstance(){};
 	
-	//把登录成功后的COOKIE记录放到此变量中
-	private static String cookieValue="";
-	
-	public static SmthInstance getInstance(){
+	public static synchronized SmthInstance getInstance(){
+		if(instance==null) {
+			instance=new SmthInstance();
+		}
 		return instance;
 	}
 	
@@ -79,17 +81,12 @@ public class SmthInstance {
 	}
 	
 	/**
-	 * 销毁MAP
+	 * 销毁项目中公用的一些变量值
 	 */
-	public void destroyPicMap() {
+	public void destroyCommonObject() {
 		picMap=null;
-	}
-
-	public static String getCookieValue() {
-		return cookieValue;
-	}
-
-	public static void setCookieValue(String cookieValue) {
-		SmthInstance.cookieValue = cookieValue;
+		instance=null;
+		SmthConnectionHandlerInstance.getInstance().exitThread();
+		ConnectionManagerInstance.getInstance().destroy();
 	}
 }
