@@ -175,11 +175,14 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
+		//点击查询版块
 		case Constants.QUERYDISCUSSION:
-			
+			Intent searchIntent=new Intent(getApplicationContext(),SearchBoardActivity.class);
+			startActivity(searchIntent);
 			break;
+		//点击设置用户个人信息
 		case Constants.PERSONINFO:
-			Intent intent=new Intent(this.getApplicationContext(),PersonInfoActivity.class);
+			Intent intent=new Intent(getApplicationContext(),PersonInfoActivity.class);
 			startActivity(intent);
 			break;
 		}

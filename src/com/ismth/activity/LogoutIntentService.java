@@ -22,7 +22,7 @@ public class LogoutIntentService extends IntentService{
 		HttpURLConnection conn=cm.connectionServer(Constants.LOGOUTURL, "GET",null,null);
 		if(conn!=null) {
 			String result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-			ISmthLog.d(Constants.TAG, "===result=="+result);
+//			ISmthLog.d(Constants.TAG, "===result=="+result);
 			conn.disconnect();
 		}
 		cm=null;

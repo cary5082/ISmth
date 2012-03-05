@@ -37,6 +37,8 @@ public class Constants {
 	public static String ATTACHURL="http://att.newsmth.net/att.php?p.@bid.@id.@attachid.jpg";
 	//新发文章或回帖的URL
 	public static String SENDNEWARTICLEURL="http://www.newsmth.net/bbssnd.php?";
+	//搜索讨论区,@name会在发起链接时替换成相应的搜索名
+	public static String SEARCHBOARDURL="http://www.newsmth.net/bbssel.php?board=@name&submit=GO";
 	//服务器通信成功
 	public static final int CONNECTIONSUCCESS=1;
 	//服务器通信出错

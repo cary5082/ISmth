@@ -219,7 +219,6 @@ public class SmthConnectionHandlerInstance {
 				break;
 			}
 			cm=null;
-			ISmthLog.d(Constants.TAG, "cm is null====");
 		}
 	}
 	
