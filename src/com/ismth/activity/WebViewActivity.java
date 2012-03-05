@@ -26,12 +26,14 @@ public class WebViewActivity extends Activity{
 		webView.setWebViewClient(new MyWebViewClient());
 		Intent intent=getIntent();
 		String url=intent.getStringExtra(Constants.SEARCHNAMEKEY);
-		url=Constants.SEARCHBOARDURL.replaceAll("@name", url);
+//		url=Constants.SEARCHBOARDURL.replaceAll("@name", url);
+		url=Constants.SEARCHBOARDURL+url;
 //		CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getApplicationContext());
 //		CookieManager cookieManager = CookieManager.getInstance();
 //		cookieManager.setAcceptCookie(true);
 //		cookieManager.setCookie("www.newsmth.net",SmthInstance.getCookieValue());
 //		cookieSyncManager.sync();
+		ISmthLog.d(Constants.TAG, "url=="+url);
 		webView.loadUrl(url);
 	}
 
