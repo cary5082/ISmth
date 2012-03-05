@@ -1,10 +1,10 @@
 package com.ismth.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -74,23 +74,19 @@ public class SearchBoardActivity extends Activity implements OnClickListener{
 		case R.id.search:
 			String sn=searchName.getText().toString();
 			if(sn.length()>0) {
-				Intent intent=new Intent(getApplicationContext(),WebViewActivity.class);
-				intent.putExtra(Constants.SEARCHNAMEKEY, SmthUtils.encodeURL(sn, "gb2312"));
-				startActivity(intent);
-				finish();
-//				search.setClickable(false);
-//				//设置为不可用状态。但实际点击还是会出现软键盘
-//				searchName.setEnabled(false);
-//				//为了不显示软键盘
-//				searchName.setInputType(InputType.TYPE_DATETIME_VARIATION_NORMAL);
-//				SmthUtils.showLoadingDialog(quanquanLayout, quanquan, quanMsg, rotateAnimation, "正在载入...");
-//				Message msg=Message.obtain();
-//				msg.what=Constants.SEARCHBOARD;
-//				msg.obj=handler;
-//				Bundle data=new Bundle();
-//				data.putString(Constants.SEARCHNAMEKEY, SmthUtils.encodeURL(sn, "gb2312"));
-//				msg.setData(data);
-//				data=null;
+				search.setClickable(false);
+				//设置为不可用状态。但实际点击还是会出现软键盘
+				searchName.setEnabled(false);
+				//为了不显示软键盘
+				searchName.setInputType(InputType.TYPE_DATETIME_VARIATION_NORMAL);
+				SmthUtils.showLoadingDialog(quanquanLayout, quanquan, quanMsg, rotateAnimation, "正在载入...");
+				Message msg=Message.obtain();
+				msg.what=Constants.SEARCHBOARD;
+				msg.obj=handler;
+				Bundle data=new Bundle();
+				data.putString(Constants.SEARCHNAMEKEY, SmthUtils.encodeURL(sn, "gb2312"));
+				msg.setData(data);
+				data=null;
 			}
 			break;
 		}
