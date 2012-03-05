@@ -27,12 +27,11 @@ public class WebViewActivity extends Activity{
 		Intent intent=getIntent();
 		String url=intent.getStringExtra(Constants.SEARCHNAMEKEY);
 		url=Constants.SEARCHBOARDURL.replaceAll("@name", url);
-		CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getApplicationContext());
-		CookieManager cookieManager = CookieManager.getInstance();
-		cookieManager.setAcceptCookie(true);
-		cookieManager.setCookie("www.newsmth.net",SmthInstance.getCookieValue());
-		cookieSyncManager.sync();
-		ISmthLog.d(Constants.TAG, "====cookie===="+cookieManager.getCookie("http://www.newsmth.net"));
+//		CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getApplicationContext());
+//		CookieManager cookieManager = CookieManager.getInstance();
+//		cookieManager.setAcceptCookie(true);
+//		cookieManager.setCookie("www.newsmth.net",SmthInstance.getCookieValue());
+//		cookieSyncManager.sync();
 		webView.loadUrl(url);
 	}
 
