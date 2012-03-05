@@ -28,6 +28,8 @@ public class Constants {
 	public static final int LISTREPLY=3;
 	//发送帖子内容给服务器
 	public static final int SENDARTICLE=4;
+	//查询版块
+	public static final int SEARCHBOARD=5;
 	
 	//十大的RSSURL
 	public static final String TODAYHOTURL="http://www.newsmth.net/rssi.php?h=1";
@@ -89,4 +91,6 @@ public class Constants {
 	public static final String SENDTITLEKEY="send_title_key";
 	//十大主题的回调handler的key
 	public static final String TODAYHOTHANDLERKEY="today_hot_handler_key";
+	//查询版块名称的KEY
+	public static final String SEARCHNAMEKEY="search_name_key";
 }

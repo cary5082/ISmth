@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -300,5 +302,21 @@ public class SmthUtils {
 	 */
 	public static void showToast(Context context,String content) {
 		Toast.makeText(context, content, Toast.LENGTH_LONG).show();
+	}
+	
+	/**
+	 * 把URL中的中文编码传输
+	 * @param name	需要编码的中文名
+	 * @param enc	
+	 * @return
+	 */
+	public static String encodeURL(String name,String enc) {
+		String result=null;
+		try {
+			result = URLEncoder.encode(name, enc);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

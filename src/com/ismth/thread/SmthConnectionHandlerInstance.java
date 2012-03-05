@@ -217,6 +217,13 @@ public class SmthConnectionHandlerInstance {
 				}
 				handler.sendMessage(message);
 				break;
+			//搜索版块
+			case Constants.SEARCHBOARD:
+				bundle=msg.getData();
+				String searchName=bundle.getString(Constants.SEARCHNAMEKEY);
+				String searchUrl=Constants.SEARCHBOARDURL.replaceAll("@name", searchName);
+				
+				break;
 			}
 			cm=null;
 		}
