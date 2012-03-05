@@ -2,7 +2,7 @@ package com.ismth.thread;
 
 import java.net.HttpURLConnection;
 
-import com.ismth.utils.ConnectionManagerInstance;
+import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SharePreferencesUtils;
@@ -25,12 +25,14 @@ public class LoginAsyncTask extends AsyncTask<String,Integer,String>{
 		String userName=SharePreferencesUtils.getString(Constants.USERNAME, "");
 		String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 		if(!"".equals(userName) && !"".equals(password)) {
-			HttpURLConnection conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.LOGINURL, "POST",null,null);
+			ConnectionManager cm=new ConnectionManager();
+			HttpURLConnection conn=cm.connectionServer(Constants.LOGINURL, "POST",null,null);
 			if(conn!=null) {
 				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 			}else {		//用空和NULL来区别是否执行登录操作。
 				result="";
 			}
+			cm=null;
 		}
 		return result;
 	}

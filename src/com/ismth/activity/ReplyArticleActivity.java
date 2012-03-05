@@ -13,8 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ismth.thread.SmthConnectionHandlerInstance;
-import com.ismth.utils.ConnectionManagerInstance;
+import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
+import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 
 /**
@@ -71,7 +72,7 @@ public class ReplyArticleActivity extends Activity implements OnClickListener{
 		switch(v.getId()) {
 		//点击发表回复的帖子
 		case R.id.add_reply_article:
-			String cookieValue=ConnectionManagerInstance.getInstance().getCookieValue();
+			String cookieValue=SmthInstance.getInstance().getCookieValue();
 			addReply.setVisibility(View.GONE);
 			replyArticle.setVisibility(View.GONE);
 			fbz.setVisibility(View.VISIBLE);

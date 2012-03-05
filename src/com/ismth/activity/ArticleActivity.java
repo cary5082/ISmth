@@ -89,7 +89,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				String result=(String)msg.obj;
-				ISmthLog.d(Constants.TAG, "====resul===="+result);
 //				article.setText(Html.fromHtml(result));
 				//如果贴子有附件重新定义scrollview的高
 				if(msg.arg1==Constants.ATTACH) {

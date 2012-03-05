@@ -13,16 +13,25 @@ import com.ismth.thread.SmthConnectionHandlerInstance;
  */
 public class SmthInstance {
 
-	private static SmthInstance instance=null;
+	private volatile static SmthInstance instance=null;
 	
 	//缓存附件的内容，KEY为贴子的ID，ARRAYLIST里放在是图片
 	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
+	//把登录成功后的COOKIE记录放到此变量中
+	private static String cookieValue="";
 	
 	private SmthInstance(){};
 	
-	public static synchronized SmthInstance getInstance(){
+	public static SmthInstance getInstance(){
+		//先检查实例是否存在，如果不存在才进入下面的同步块 
 		if(instance==null) {
-			instance=new SmthInstance();
+			//同步块，线程安全地创建实例
+			synchronized (SmthInstance.class) {
+				//再次检查实例是否存在，如果不存在才真正地创建实例
+				if(instance==null) {
+					instance=new SmthInstance();
+				}
+			}
 		}
 		return instance;
 	}
@@ -86,7 +95,16 @@ public class SmthInstance {
 	public void destroyCommonObject() {
 		picMap=null;
 		instance=null;
+		cookieValue="";
 		SmthConnectionHandlerInstance.getInstance().exitThread();
-		ConnectionManagerInstance.getInstance().destroy();
 	}
+
+	public static String getCookieValue() {
+		return cookieValue;
+	}
+
+	public static void setCookieValue(String cookieValue) {
+		SmthInstance.cookieValue = cookieValue;
+	}
+	
 }

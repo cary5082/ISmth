@@ -30,7 +30,7 @@ import com.ismth.adapter.TodayHotAdapter;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.thread.LoginAsyncTask;
 import com.ismth.thread.SmthConnectionHandlerInstance;
-import com.ismth.utils.ConnectionManagerInstance;
+import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SharePreferencesUtils;

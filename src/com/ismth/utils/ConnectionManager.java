@@ -12,26 +12,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 负责连接的单例模式
+ * 负责连接
  *@Time:2012-2-8
  *@Author:wangjianfei
  *@Version:
  */
-public class ConnectionManagerInstance {
-
-	private ConnectionManagerInstance(){};
-	
-	private static ConnectionManagerInstance instance=null;
-	
-	//把登录成功后的COOKIE记录放到此变量中
-	private static String cookieValue="";
-	
-	public static synchronized ConnectionManagerInstance getInstance(){
-		if(instance==null) {
-			instance=new ConnectionManagerInstance();
-		}
-		return instance;
-	}
+public class ConnectionManager {
 	
 	
 	/**
@@ -55,6 +41,7 @@ public class ConnectionManagerInstance {
 			conn.setRequestMethod(method);
 			conn.setRequestProperty("User-Agent","Mozilla/4.7 [en] (Win98; I)");
 			conn.setRequestProperty("Accept-Charset", "GB2312");
+			String cookieValue=SmthInstance.getInstance().getCookieValue();
 			//如果cookieValue里的值不为空时，说明之前登录过了，此时只需要把上次记录的COOKIE放到此次登录中就行, 反之则需要直接登录
 			String username=SharePreferencesUtils.getString(Constants.USERNAME,"guest");
 			if(cookieValue.length()==0 && !"guest".equals(username) && address.equals(Constants.LOGINURL)) {
@@ -90,6 +77,8 @@ public class ConnectionManagerInstance {
 				}
 				if(tempCookieValue.length()>0) {
 					cookieValue="Hm_lvt_9c7f4d9b7c00cb5aba2c637c64a41567=1328491921147;"+getCookie(tempCookieValue);
+					SmthInstance.getInstance().setCookieValue(cookieValue);
+					cookieValue=null;
 				}
 			}
 //			BufferedReader br;
@@ -155,14 +144,5 @@ public class ConnectionManagerInstance {
 			}
 		}
 		return sb.toString();
-    }
-    
-    public String getCookieValue(){
-    	return cookieValue;
-    }
-    
-    public void destroy(){
-    	cookieValue="";
-    	instance=null;
     }
 }

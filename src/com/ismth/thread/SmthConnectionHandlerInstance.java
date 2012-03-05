@@ -12,7 +12,7 @@ import android.os.Message;
 
 import com.ismth.bean.ArticleBean;
 import com.ismth.bean.TodayHotBean;
-import com.ismth.utils.ConnectionManagerInstance;
+import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
@@ -37,11 +37,15 @@ public class SmthConnectionHandlerInstance {
 	
 	private SmthConnectionHandlerInstance(){};
 	
-	private static SmthConnectionHandlerInstance instance=null;
+	private volatile static SmthConnectionHandlerInstance instance=null;
 	
-	public static synchronized SmthConnectionHandlerInstance getInstance(){
+	public static SmthConnectionHandlerInstance getInstance(){
 		if(instance==null) {
-			instance=new SmthConnectionHandlerInstance();
+			synchronized (SmthConnectionHandlerInstance.class) {
+				if(instance==null) {
+					instance=new SmthConnectionHandlerInstance();
+				}
+			}
 		}
 		return instance;
 	}
@@ -64,11 +68,12 @@ public class SmthConnectionHandlerInstance {
 			String bid=null;
 			String id=null;
 			Message message=Message.obtain();
+			ConnectionManager cm=new ConnectionManager();
 			switch(msg.what) {
 			//获取十大
 			case Constants.TODAYHOT:
 				//先获取十大帖子字节流
-				conn=ConnectionManagerInstance.getInstance().connectionServer(Constants.TODAYHOTURL, "GET",null,null);
+				conn=cm.connectionServer(Constants.TODAYHOTURL, "GET",null,null);
 				if(conn!=null){
 					//把字节流转成String字符串
 					result=SmthUtils.getStringForHttp(conn, false, null);
@@ -94,7 +99,7 @@ public class SmthConnectionHandlerInstance {
 				String url=bundle.getString(Constants.BIDURLKEY);
 				id=bundle.getString(Constants.IDKEY);
 				//先从帖子的URL中读取网页内容，从网页内容中获得BID,先拿到字节流
-				conn=ConnectionManagerInstance.getInstance().connectionServer(url, "GET",null,null);
+				conn=cm.connectionServer(url, "GET",null,null);
 				if(conn!=null) {
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
@@ -113,7 +118,7 @@ public class SmthConnectionHandlerInstance {
 //					String articleUrl="http://www.newsmth.net/bbscon.php?bid=874&id=1792262";
 //					bid="874";
 //					id="1792262";
-					conn=ConnectionManagerInstance.getInstance().connectionServer(articleUrl, "GET",null,null);
+					conn=cm.connectionServer(articleUrl, "GET",null,null);
 					if(conn!=null) {
 						result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 						ab=SmthUtils.getArticleForHtml(result);
@@ -162,7 +167,7 @@ public class SmthConnectionHandlerInstance {
 				String tempUrl=Constants.ARTICLEURL.replaceAll("@bid", bid);
 				//如果没有回贴主ID，则获取回帖主ID
 				if(replyIds==null) {
-					conn=ConnectionManagerInstance.getInstance().connectionServer(replyUrl, "GET",null,null);
+					conn=cm.connectionServer(replyUrl, "GET",null,null);
 					result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 					if(result!=null && result.length()>0) {
 						replyIds=SmthUtils.getReplyId(result);
@@ -178,7 +183,7 @@ public class SmthConnectionHandlerInstance {
 						//遍历每个回贴的主ID，获取回帖内容
 						for(String aid:replyIds) {
 							String tu=tempUrl.replaceAll("@id", aid);
-							conn=ConnectionManagerInstance.getInstance().connectionServer(tu, "GET",null,null);
+							conn=cm.connectionServer(tu, "GET",null,null);
 							if(conn!=null) {
 								result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 								ab=SmthUtils.getArticleForHtml(result);
@@ -202,7 +207,7 @@ public class SmthConnectionHandlerInstance {
 				String sendUrl=bundle.getString(Constants.SENDARTICLEURLKEY);
 				String content=bundle.getString(Constants.ARTICLECONTENTKEY);
 				String titleString=bundle.getString(Constants.SENDTITLEKEY);
-				conn=ConnectionManagerInstance.getInstance().connectionServer(sendUrl, "POST", content,titleString);
+				conn=cm.connectionServer(sendUrl, "POST", content,titleString);
 				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 				//通过返回的数据中有没有发文成功的字样，来判断发文是否成功。
 				if(result.indexOf("发文成功")>-1) {
@@ -213,6 +218,8 @@ public class SmthConnectionHandlerInstance {
 				handler.sendMessage(message);
 				break;
 			}
+			cm=null;
+			ISmthLog.d(Constants.TAG, "cm is null====");
 		}
 	}
 	
@@ -286,6 +293,7 @@ public class SmthConnectionHandlerInstance {
 		SmthInstance instance=SmthInstance.getInstance();
 		ArrayList<byte[]> linked=new ArrayList<byte[]>();
 		HttpURLConnection conn=null;
+		ConnectionManager cm=new ConnectionManager();
 		try {
 			//根据帖子的ID看看附件数据是否有缓存到本地
 			boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));
@@ -301,7 +309,7 @@ public class SmthConnectionHandlerInstance {
 						int key=Integer.valueOf(str);
 //						attachSource.add(key);
 						//如果没有缓存附件数据，则从网上下载附件
-						conn=ConnectionManagerInstance.getInstance().connectionServer(attachUrl, "GET",null,null);
+						conn=cm.connectionServer(attachUrl, "GET",null,null);
 						if(conn!=null) {
 							byte[] temp=SmthUtils.getByteArrayForHttp(conn);
 							if(temp!=null && temp.length>0) {
@@ -314,6 +322,7 @@ public class SmthConnectionHandlerInstance {
 			}
 			linked=null;
 			attachId=null;
+			cm=null;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
