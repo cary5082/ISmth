@@ -16,6 +16,7 @@ import com.ismth.bean.TodayHotBean;
 import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
 import com.ismth.utils.HtmlParser;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 import com.ismth.utils.XmlParserInstance;
@@ -222,10 +223,10 @@ public class SmthConnectionHandlerInstance {
 			case Constants.SEARCHBOARD:
 				bundle=msg.getData();
 				String getUrl=bundle.getString(Constants.GETURLKEY);
-//				HtmlParser hp=new HtmlParser();
 				HtmlSourceBean htmlSource=HtmlParser.getHtmlSourceForUrl(getUrl,"div.sec.nav","ul.list.sec");
 				message.obj=htmlSource;
 				message.what=Constants.CONNECTIONSUCCESS;
+				ISmthLog.d(Constants.TAG, "is true====");
 				handler.sendMessage(message);
 				break;
 			}

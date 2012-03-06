@@ -6,8 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ismth.adapter.BoardAdapter;
 import com.ismth.adapter.SearchBoardAdapter;
 import com.ismth.bean.HtmlContentBean;
 import com.ismth.bean.HtmlSourceBean;
@@ -43,7 +44,7 @@ public class BoardActivity extends Activity implements android.view.View.OnClick
 	private ImageView quanquan; 
 	private TextView quanMsg; 
 	private Animation rotateAnimation; 
-	private SearchBoardAdapter adapter;
+	private BoardAdapter adapter;
 	private ListView listView;
 	//下一页
 	private TextView nextpage;
@@ -58,6 +59,7 @@ public class BoardActivity extends Activity implements android.view.View.OnClick
 			case Constants.CONNECTIONSUCCESS:
 				HtmlSourceBean htmlSource=(HtmlSourceBean)msg.obj;
 				List<HtmlContentBean> hcList=htmlSource.list;
+				ISmthLog.d(Constants.TAG, "list size==="+hcList.size());
 				if(!"".equals(htmlSource.nextpageLink)){
 					nextpage.setVisibility(View.VISIBLE);
 				}
@@ -67,7 +69,6 @@ public class BoardActivity extends Activity implements android.view.View.OnClick
 				//说明获取成功
 				if(hcList!=null && hcList.size()>0) {
 					listView.setVisibility(View.VISIBLE);
-					ISmthLog.d(Constants.TAG, "list size=="+hcList.size());
 					adapter.setList(hcList);
 					adapter.notifyDataSetChanged();
 				}else {
@@ -95,7 +96,7 @@ public class BoardActivity extends Activity implements android.view.View.OnClick
 		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
 		rotateAnimation.setInterpolator(new LinearInterpolator());
 		listView=(ListView)findViewById(R.id.board_article);
-		adapter=new SearchBoardAdapter(getApplicationContext());
+		adapter=new BoardAdapter(getApplicationContext());
 		listView.setAdapter(adapter);
 		nextpage=(TextView)findViewById(R.id.nextpage);
 		prepage=(TextView)findViewById(R.id.prepage);

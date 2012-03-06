@@ -30,6 +30,7 @@ public class HtmlParser {
 		List<HtmlContentBean> list=new ArrayList<HtmlContentBean>();
 		try {
 			Document doc=Jsoup.connect(url).timeout(Constants.CONNECTIONTIMEOUT).get();
+			ISmthLog.d(Constants.TAG, "doc==="+doc);
 			//获取上一页，下一页相关信息
 			Elements elems=doc.select(topTag);
 			Elements elemsTwo=elems.select("a[href]");
