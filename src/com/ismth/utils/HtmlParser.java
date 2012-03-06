@@ -25,11 +25,11 @@ public class HtmlParser {
 	 * @param contentTag 获取具体内容的TAG
 	 * @return
 	 */
-	public HtmlSourceBean getHtmlSourceForUrl(String url,String topTag,String contentTag){
+	public static HtmlSourceBean getHtmlSourceForUrl(String url,String topTag,String contentTag){
 		HtmlSourceBean htmlSource=new HtmlSourceBean();
 		List<HtmlContentBean> list=new ArrayList<HtmlContentBean>();
 		try {
-			Document doc=Jsoup.connect(url).userAgent("Mozilla").timeout(Constants.CONNECTIONTIMEOUT).get();
+			Document doc=Jsoup.connect(url).timeout(Constants.CONNECTIONTIMEOUT).get();
 			//获取上一页，下一页相关信息
 			Elements elems=doc.select(topTag);
 			Elements elemsTwo=elems.select("a[href]");

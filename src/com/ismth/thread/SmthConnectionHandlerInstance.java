@@ -222,8 +222,8 @@ public class SmthConnectionHandlerInstance {
 			case Constants.SEARCHBOARD:
 				bundle=msg.getData();
 				String getUrl=bundle.getString(Constants.GETURLKEY);
-				HtmlParser hp=new HtmlParser();
-				HtmlSourceBean htmlSource=hp.getHtmlSourceForUrl(getUrl,"div.sec.nav","ul.list.sec");
+//				HtmlParser hp=new HtmlParser();
+				HtmlSourceBean htmlSource=HtmlParser.getHtmlSourceForUrl(getUrl,"div.sec.nav","ul.list.sec");
 				message.obj=htmlSource;
 				message.what=Constants.CONNECTIONSUCCESS;
 				handler.sendMessage(message);
