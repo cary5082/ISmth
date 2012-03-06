@@ -10,6 +10,8 @@ public class Constants {
 	public static final String LOGINURL="http://www.newsmth.net/bbslogin1203.php";
 	//退出登陆URL
 	public static final String LOGOUTURL="http://www.newsmth.net/bbslogout.php";
+	//手机站点
+	public static final String MOBILEURL="http://m.newsmth.net";
 	//连接超时为10秒
 	public static final int CONNECTIONTIMEOUT=10000;
 	//读取超时为10秒

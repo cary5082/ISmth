@@ -22,7 +22,6 @@
         <activity android:name=".ListReplyActivity"/>
         <activity android:name=".ReplyArticleActivity"/>
         <activity android:name=".SearchBoardActivity"/>
-        <activity android:name=".WebViewActivity"/>
         <service android:name=".LogoutIntentService"/>
     </application>
 

@@ -11,10 +11,11 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.ismth.bean.ArticleBean;
+import com.ismth.bean.HtmlSourceBean;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
+import com.ismth.utils.HtmlParser;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 import com.ismth.utils.XmlParserInstance;
@@ -221,8 +222,11 @@ public class SmthConnectionHandlerInstance {
 			case Constants.SEARCHBOARD:
 				bundle=msg.getData();
 				String searchName=bundle.getString(Constants.SEARCHNAMEKEY);
-				String searchUrl=Constants.SEARCHBOARDURL.replaceAll("@name", searchName);
-				
+				String searchUrl=Constants.SEARCHBOARDURL+searchName;
+				HtmlSourceBean htmlSource=HtmlParser.getHtmlSourceForUrl(searchUrl,"div.sec.nav","ul.list.sec");
+				message.obj=htmlSource;
+				message.what=Constants.CONNECTIONSUCCESS;
+				handler.sendMessage(message);
 				break;
 			}
 			cm=null;
