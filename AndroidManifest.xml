@@ -22,6 +22,7 @@
         <activity android:name=".ListReplyActivity"/>
         <activity android:name=".ReplyArticleActivity"/>
         <activity android:name=".SearchBoardActivity"/>
+        <activity android:name=".BoardActivity"/>
         <service android:name=".LogoutIntentService"/>
     </application>
 

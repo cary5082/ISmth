@@ -221,9 +221,9 @@ public class SmthConnectionHandlerInstance {
 			//搜索版块
 			case Constants.SEARCHBOARD:
 				bundle=msg.getData();
-				String searchName=bundle.getString(Constants.SEARCHNAMEKEY);
-				String searchUrl=Constants.SEARCHBOARDURL+searchName;
-				HtmlSourceBean htmlSource=HtmlParser.getHtmlSourceForUrl(searchUrl,"div.sec.nav","ul.list.sec");
+				String getUrl=bundle.getString(Constants.GETURLKEY);
+				HtmlParser hp=new HtmlParser();
+				HtmlSourceBean htmlSource=hp.getHtmlSourceForUrl(getUrl,"div.sec.nav","ul.list.sec");
 				message.obj=htmlSource;
 				message.what=Constants.CONNECTIONSUCCESS;
 				handler.sendMessage(message);

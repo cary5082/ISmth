@@ -8,6 +8,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,13 +20,13 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.ismth.adapter.SearchBoardAdapter;
 import com.ismth.bean.HtmlContentBean;
@@ -119,7 +120,8 @@ public class SearchBoardActivity extends Activity implements View.OnClickListene
 				msg.what=Constants.SEARCHBOARD;
 				msg.obj=handler;
 				Bundle data=new Bundle();
-				data.putString(Constants.SEARCHNAMEKEY, sn);
+				String searchUrl=Constants.SEARCHBOARDURL+sn;
+				data.putString(Constants.GETURLKEY, searchUrl);
 				msg.setData(data);
 				data=null;
 				SmthConnectionHandlerInstance.getInstance().sendMessage(msg);
@@ -147,7 +149,11 @@ public class SearchBoardActivity extends Activity implements View.OnClickListene
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
 		HtmlContentBean hcb=(HtmlContentBean)adapter.getItem(position);
-		
+		Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
+		intent.putExtra(Constants.BOARDNAMEKEY, hcb.content);
+		intent.putExtra(Constants.BOARDURLKEY, hcb.linkUrl);
+		startActivity(intent);
+		finish();
 	}
     
     
