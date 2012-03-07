@@ -198,8 +198,9 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	 */
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-//		AdapterView.AdapterContextMenuInfo menuInfo;
-//		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo menuInfo;
+		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		String replyUrl=adapter.getLinkUrl(menuInfo.position);
 //		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
 //		i.putExtra(Constants.TITLEBAR, titleString);
 //		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,replyIds.get(menuInfo.position),true);
