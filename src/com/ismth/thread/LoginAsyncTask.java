@@ -4,6 +4,7 @@ import java.net.HttpURLConnection;
 
 import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
+import com.ismth.utils.HtmlParser;
 import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SharePreferencesUtils;
 import com.ismth.utils.SmthUtils;
@@ -25,14 +26,7 @@ public class LoginAsyncTask extends AsyncTask<String,Integer,String>{
 		String userName=SharePreferencesUtils.getString(Constants.USERNAME, "");
 		String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 		if(!"".equals(userName) && !"".equals(password)) {
-			ConnectionManager cm=new ConnectionManager();
-			HttpURLConnection conn=cm.connectionServer(Constants.LOGINURL, "POST",null,null);
-			if(conn!=null) {
-				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-			}else {		//用空和NULL来区别是否执行登录操作。
-				result="";
-			}
-			cm=null;
+			result=HtmlParser.loginSmth(Constants.MOBILELOGIN, userName, password);
 		}
 		return result;
 	}
@@ -41,7 +35,7 @@ public class LoginAsyncTask extends AsyncTask<String,Integer,String>{
 	protected void onPostExecute(String result) {
 		//如果result为null说明没有执行登录方法，所以不要显示TOAST成功或者失败
 		if(result!=null) {
-			if(result.indexOf("frames.html")>-1) {
+			if(result.equals("登陆成功")) {
 				SmthUtils.showToast(context, "登录成功!");
 			}else {
 				SmthUtils.showToast(context, "登录失败!");

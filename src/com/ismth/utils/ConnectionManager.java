@@ -41,10 +41,11 @@ public class ConnectionManager {
 			conn.setRequestMethod(method);
 			conn.setRequestProperty("User-Agent","Mozilla/4.7 [en] (Win98; I)");
 			conn.setRequestProperty("Accept-Charset", "GB2312");
-			String cookieValue=SmthInstance.getInstance().getCookieValue();
+//			String cookieValue=SmthInstance.getInstance().getCookieValue();
+			String cookieValue="";
 			//如果cookieValue里的值不为空时，说明之前登录过了，此时只需要把上次记录的COOKIE放到此次登录中就行, 反之则需要直接登录
 			String username=SharePreferencesUtils.getString(Constants.USERNAME,"guest");
-			if(cookieValue.length()==0 && !"guest".equals(username) && address.equals(Constants.LOGINURL)) {
+			if(cookieValue.length()==0 && !"guest".equals(username)) {
 				StringBuffer sb = new StringBuffer();
 				String password=SharePreferencesUtils.getString(Constants.PASSWORD, "");
 				sb.append("id=").append(username).append("&passwd=").append(password);
@@ -63,7 +64,7 @@ public class ConnectionManager {
 			//开始连接服务器
 			conn.connect();
 			//说明并没有保存登录后的cookie，把登录后的cookie保存下来，供下次连接使用
-			if(cookieValue.length()==0 && !"guest".equals(username) && address.equals(Constants.LOGINURL)) {
+			if(cookieValue.length()==0 && !"guest".equals(username)) {
 				Map<String, List<String>> hfMap=conn.getHeaderFields();
 				String tempCookieValue="";
 				Set<String> keys=hfMap.keySet();
@@ -77,7 +78,7 @@ public class ConnectionManager {
 				}
 				if(tempCookieValue.length()>0) {
 					cookieValue="Hm_lvt_9c7f4d9b7c00cb5aba2c637c64a41567=1328491921147;"+getCookie(tempCookieValue);
-					SmthInstance.getInstance().setCookieValue(cookieValue);
+//					SmthInstance.getInstance().setCookieValue(cookieValue);
 					cookieValue=null;
 				}
 			}

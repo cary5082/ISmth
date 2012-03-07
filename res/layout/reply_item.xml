@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -11,6 +11,13 @@
     android:layout_marginTop="3dp"
     android:orientation="vertical">
       
+    <TextView android:id="@+id/reply_arti"
+        	  android:layout_width="80dp"
+        	  android:layout_height="wrap_content"
+        	  android:text="回复"
+        	  android:textColor="@color/text_color"
+        	  android:layout_gravity="right"/>   
+       
     <TextView android:id="@+id/reply_con"
         	  android:layout_width="fill_parent"
         	  android:layout_height="wrap_content"
@@ -18,4 +25,49 @@
   </LinearLayout> 
   
   <include layout="@layout/line_common"/>
-</LinearLayout>
+</LinearLayout> -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView android:id="@+id/reply_arti"
+        	  android:layout_width="80dp"
+        	  android:layout_height="wrap_content"
+        	  android:text="回复"
+        	  android:textColor="@color/text_color"
+        	  android:layout_gravity="right"/>   
+       
+    <TextView android:id="@+id/reply_con"
+        	  android:layout_alignBottom="@id/reply_arti"
+        	  android:layout_marginTop="15dp"
+        	  android:layout_width="fill_parent"
+        	  android:layout_height="wrap_content"
+        	  android:textColor="@color/text_color"/> 
+    
+    
+    <TextView  android:layout_marginTop="4dp"
+        	   android:layout_alignBottom="@id/reply_con"
+        	   />
+    
+<!--    <LinearLayout android:id="@+id/hotitem"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="3dp"
+    android:orientation="vertical">
+      
+    <TextView android:id="@+id/reply_arti"
+        	  android:layout_width="80dp"
+        	  android:layout_height="wrap_content"
+        	  android:text="回复"
+        	  android:textColor="@color/text_color"
+        	  android:layout_gravity="right"/>   
+       
+    <TextView android:id="@+id/reply_con"
+        	  android:layout_width="fill_parent"
+        	  android:layout_height="wrap_content"
+        	  android:textColor="@color/text_color"/>
+  </LinearLayout>  -->
+  
+  <!-- <include layout="@layout/line_common"/> -->
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.ismth.utils;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.ismth.thread.SmthConnectionHandlerInstance;
@@ -18,8 +19,18 @@ public class SmthInstance {
 	//缓存附件的内容，KEY为贴子的ID，ARRAYLIST里放在是图片
 	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
 	//把登录成功后的COOKIE记录放到此变量中
-	private static String cookieValue="";
+	private String cookieValue="";
 	
+	private Map<String,String> cookie;
+	
+	public Map<String, String> getCookie() {
+		return cookie;
+	}
+
+	public void setCookie(Map<String, String> cookie) {
+		this.cookie = cookie;
+	}
+
 	private SmthInstance(){};
 	
 	public static SmthInstance getInstance(){
@@ -97,14 +108,6 @@ public class SmthInstance {
 		instance=null;
 		cookieValue="";
 		SmthConnectionHandlerInstance.getInstance().exitThread();
-	}
-
-	public static String getCookieValue() {
-		return cookieValue;
-	}
-
-	public static void setCookieValue(String cookieValue) {
-		SmthInstance.cookieValue = cookieValue;
 	}
 	
 }

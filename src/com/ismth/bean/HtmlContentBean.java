@@ -7,8 +7,8 @@ package com.ismth.bean;
  */
 public class HtmlContentBean {
 
-	//内容连接
-	public String linkUrl;
-	//内容
+	/** 回复帖子的地址*/
+	public String replyUrl;
+	/** 帖子内容*/
 	public String content;
 }

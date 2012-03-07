@@ -6,12 +6,14 @@ package com.ismth.utils;
  */
 public class Constants {
 	
-	/** 登陆的URL*/
-	public static final String LOGINURL="http://www.newsmth.net/bbslogin1203.php";
-	/** 退出登陆URL*/
-	public static final String LOGOUTURL="http://www.newsmth.net/bbslogout.php";
+	/** 手机退出登陆URL*/
+	public static final String MOBILELOGOUTURL="http://m.newsmth.net/user/logout";
+	/** 手机登录URL*/
+	public static final String MOBILELOGIN="http://m.newsmth.net/user/login";
 	/** 手机站点*/
 	public static final String MOBILEURL="http://m.newsmth.net";
+	/** 文章的链接@boardName,@gid会在发起链接时替换成相应的参数*/
+	public static final String ARTICLEURL="http://m.newsmth.net/article/@boardName/@GID";
 	/** 连接超时为10秒*/
 	public static final int CONNECTIONTIMEOUT=10000;
 	/** 读取超时为10秒*/
@@ -32,13 +34,8 @@ public class Constants {
 	public static final int SENDARTICLE=4;
 	/** 查询版块*/
 	public static final int SEARCHBOARD=5;
-	
 	/** 十大的RSSURL*/
 	public static final String TODAYHOTURL="http://www.newsmth.net/rssi.php?h=1";
-	/** 文章主贴的链接@bid,@id会在发起链接时替换成相应的参数*/
-	public static  String ARTICLEURL="http://www.newsmth.net/bbscon.php?bid=@bid&id=@id";
-	/** 文章附件的链接@bid,@id,@attachid会在发起链接时替换成相应的参数*/
-	public static String ATTACHURL="http://att.newsmth.net/att.php?p.@bid.@id.@attachid.jpg";
 	/** 新发文章或回帖的URL*/
 	public static String SENDNEWARTICLEURL="http://www.newsmth.net/bbssnd.php?";
 	/** 搜索讨论区,@name会在发起链接时替换成相应的搜索名*/

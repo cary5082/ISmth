@@ -319,4 +319,29 @@ public class SmthUtils {
 		}
 		return result;
 	}
+	
+	/**
+	 * 根据URL地址得到版块名称
+	 * @param url
+	 * @return
+	 */
+	public static String getBoardName(String url){
+		String boardName=url.substring(url.indexOf("=")+1,url.indexOf("&"));
+		return boardName;
+	}
+	
+	/**
+	 * 根据URL地址得到GID
+	 * @param url
+	 * @return
+	 */
+	public static String getGid(String url) {
+		String gid=url.substring(url.lastIndexOf("=")+1,url.length());
+		return gid;
+	}
+	
+	public static String getGidForMobile(String url) {
+		String gid=url.substring(url.lastIndexOf("/")+1,url.length());
+		return gid;
+	}
 }

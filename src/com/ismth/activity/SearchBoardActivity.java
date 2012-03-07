@@ -148,12 +148,12 @@ public class SearchBoardActivity extends Activity implements View.OnClickListene
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-		HtmlContentBean hcb=(HtmlContentBean)adapter.getItem(position);
-		Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
-		intent.putExtra(Constants.BOARDNAMEKEY, hcb.content);
-		intent.putExtra(Constants.BOARDURLKEY, hcb.linkUrl);
-		startActivity(intent);
-		finish();
+//		HtmlContentBean hcb=(HtmlContentBean)adapter.getItem(position);
+//		Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
+//		intent.putExtra(Constants.BOARDNAMEKEY, hcb.content);
+//		intent.putExtra(Constants.BOARDURLKEY, hcb.linkUrl);
+//		startActivity(intent);
+//		finish();
 	}
     
     

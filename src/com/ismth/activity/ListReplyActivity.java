@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ismth.adapter.ListReplyAdapter;
+import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
@@ -46,51 +47,38 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	private Animation rotateAnimation; 
 	private ListView listView;
 	private TextView title;
-	//跟贴ID集合
-	ArrayList<String> replyIds=null;
-	//回帖的内容
-	ArrayList<String> replyContent=new ArrayList<String>();
-	//获取下一页帖子的URL;
-	String replyUrl;
+	//获取帖子的URL;
+	String url;
 	String titleString;
-	//帖子分页，默认第一页
-	int pno=1;
-	String bid;
 	ListReplyAdapter adapter;
 	String id;
 	//下一页
 	TextView nextpage;
 	//上一页
 	TextView prepage;
-	//是否清空replyIds里的数据
-	boolean clearReplyIds=false;
+	HtmlSourceBean hsb;
 	
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
 			SmthUtils.hideLoadingDialog(quanquanLayout, quanMsg, quanquan);
 			listView.setVisibility(View.VISIBLE);
-			nextpage.setVisibility(View.VISIBLE);
-			if(pno>1) {
-				prepage.setVisibility(View.VISIBLE);
-			}
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
-				Bundle data=msg.getData();
-				replyContent=(ArrayList<String>)msg.obj;
-				replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
-				data=null;
+				hsb=(HtmlSourceBean)msg.obj;
 				//说明获取数据正确
-				if(replyContent.size()>0) {
-					clearReplyIds=true;
-					adapter.setListReply(replyContent);
+				if(hsb.list!=null && hsb.list.size()>0) {
+					if(hsb.nextpageLink.length() > 0) {
+						nextpage.setVisibility(View.VISIBLE);
+					}
+					if(hsb.prepageLink.length() >0) {
+						prepage.setVisibility(View.VISIBLE);
+					}
+					adapter.setListReply(hsb.list);
 					adapter.notifyDataSetChanged();
 				}else {	//提示用户获取数据失败
 					showErrorDialog();
 				}
-				break;
-			case Constants.MAXPAGENUM:
-				SmthUtils.showToast(ListReplyActivity.this.getApplicationContext(), "已经是最后一页");
 				break;
 			}
 		}
@@ -107,10 +95,8 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
         //获取上入页面跳转过来通过intent传入的值
         Intent intent=getIntent();
         if(intent!=null) {
-        	replyIds=intent.getStringArrayListExtra(Constants.REPLYIDKEY);
-        	replyUrl=intent.getStringExtra(Constants.REPLYURLKEY);
+        	url=intent.getStringExtra(Constants.REPLYURLKEY);
         	titleString=intent.getStringExtra(Constants.TITLEBAR);
-        	bid=intent.getStringExtra(Constants.BIDKEY);
         	id=intent.getStringExtra(Constants.IDKEY);
         }
         title=(TextView)findViewById(R.id.title);
@@ -140,19 +126,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		nextpage.setVisibility(View.INVISIBLE);
 		prepage.setVisibility(View.INVISIBLE);
 		listView.setVisibility(View.GONE);
-//		SmthUtils.showLoadingDialog(quanquan,quanMsg,rotateAnimation,"正在载入.....");
 		SmthUtils.showLoadingDialog(quanquanLayout,quanquan,quanMsg,rotateAnimation,"正在载入.....");
 		Message msg=Message.obtain();
 		Bundle data=new Bundle();
-		//如果清除的标志位为真是每次请求新数据把当前页面的跟帖ID清空。之所以要这个变量是因为第一次进入这个页面，会把第一页的跟帖传入，节省流量
-		if(clearReplyIds) {
-			replyIds=null;
-		}
-		data.putStringArrayList(Constants.REPLYIDKEY, replyIds);
-		data.putString(Constants.REPLYURLKEY, replyUrl);
-		data.putInt(Constants.PNOKEY, pno);
-		data.putString(Constants.BIDKEY, bid);
-		data.putString(Constants.IDKEY, id);
+		data.putString(Constants.GETURLKEY, url);
 		msg.setData(data);
 		msg.what=Constants.LISTREPLY;
 		//handler用于回调
@@ -207,15 +184,13 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public void onClick(View v) {
 		switch(v.getId()) {
 		case R.id.nextpage:
-			//页数加1
-			pno++;
-			startProcess();
+			url=Constants.MOBILEURL+hsb.nextpageLink;
 			break;
 		case R.id.prepage:
-			pno--;
-			startProcess();
+			url=Constants.MOBILEURL+hsb.prepageLink;
 			break;
 		}
+		startProcess();
 	}
 
 	/**
@@ -223,13 +198,13 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	 */
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo menuInfo;
-		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
-		i.putExtra(Constants.TITLEBAR, titleString);
-		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,replyIds.get(menuInfo.position),true);
-		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
-		startActivity(i);
+//		AdapterView.AdapterContextMenuInfo menuInfo;
+//		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+//		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+//		i.putExtra(Constants.TITLEBAR, titleString);
+//		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,replyIds.get(menuInfo.position),true);
+//		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
+//		startActivity(i);
 		return true;
 	}
 	

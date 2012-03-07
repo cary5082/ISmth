@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -31,12 +32,13 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.ismth.adapter.GalleryAdapter;
+import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.BitmapUtils;
 import com.ismth.utils.Constants;
@@ -59,6 +61,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	private TextView loadMsg; 
 	private Animation rotateAnimation;
 	GalleryAdapter adapter;
+	TextView reply;
 	Gallery gallery;
 	//是否正在显示大图标志位，TRUE为正在显示
 	boolean showBigPicFlag=false;
@@ -72,14 +75,11 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	LinearLayout linearLayout;
 	
 	LinearLayout topbarline;
-	//跟贴ID集合
-	ArrayList<String> replyIds;
-	//获取下一页帖子的URL;
-	String replyUrl;
-	TextView reply;
-	String bid;
+	
+	TextView queryReply;
 	//主帖子ID
 	String id;
+	String url;
 	
 	
 	public Handler handler=new Handler(){
@@ -88,31 +88,27 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			SmthUtils.hideLoadingDialog(loadlayout, loadMsg, loadquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
-				String result=(String)msg.obj;
-//				article.setText(Html.fromHtml(result));
-				//如果贴子有附件重新定义scrollview的高
-				if(msg.arg1==Constants.ATTACH) {
-					WindowManager wm = (WindowManager)ArticleActivity.this.getSystemService(ArticleActivity.this.WINDOW_SERVICE);
-					int height = wm.getDefaultDisplay().getHeight();//屏幕高度
-					//如果有附件把scrollView高度设为屏幕高度一半
-					scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
-					//如果有附件显示正在加载附件对话框
-					SmthUtils.showLoadingDialog(loadlayout,loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
+				HtmlSourceBean hsb=(HtmlSourceBean)msg.obj;
+				if(hsb.mainArticle!=null && hsb.mainArticle.length()>0) {
+					//如果贴子有附件重新定义scrollview的高
+					if(hsb.attUrl!=null && hsb.attUrl.size()>0) {
+						WindowManager wm = (WindowManager)ArticleActivity.this.getSystemService(ArticleActivity.this.WINDOW_SERVICE);
+						int height = wm.getDefaultDisplay().getHeight();//屏幕高度
+						//如果有附件把scrollView高度设为屏幕高度一半
+						scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
+						//如果有附件显示正在加载附件对话框
+						SmthUtils.showLoadingDialog(loadlayout,loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
+					}
+					article.setText(Html.fromHtml(hsb.mainArticle));
+				}else {
+					showErrorDialog();
 				}
-				article.setText(result);
-				Bundle data=msg.getData();
-				if(data!=null) {
-					replyIds=data.getStringArrayList(Constants.REPLYIDKEY);
-					replyUrl=data.getString(Constants.REPLYURLKEY);
-					bid=data.getString(Constants.BIDKEY);
+				if(hsb.isReply) {
+					queryReply.setVisibility(View.VISIBLE);
 				}
-				//如果replyIds大于1说明有回帖，此时显示查看回帖的按钮。
-				if(replyIds.size()>1) {
+				if(hsb.replyMainUrl!=null && hsb.replyMainUrl.length()>0) {
 					reply.setVisibility(View.VISIBLE);
 				}
-				break;
-			case Constants.CONNECTIONERROR:
-				showErrorDialog();
 				break;
 			case Constants.CONNECTIONATTACH:
 				int articleId=(Integer)msg.arg1;
@@ -142,18 +138,18 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		scroll=(ScrollView)findViewById(R.id.scroll);
 		bigPic=(ImageView)findViewById(R.id.bigpic);
 		bigpic_layout=(RelativeLayout)findViewById(R.id.bigpic_layout);
-		reply=(TextView)findViewById(R.id.reply);
+		queryReply=(TextView)findViewById(R.id.reply);
 		adapter=new GalleryAdapter(getApplicationContext());
 		gallery.setAdapter(adapter);
+		reply=(TextView)findViewById(R.id.re_ar);
 		//设置图片边距
 		gallery.setSpacing(15);
 		gallery.setOnItemClickListener(this);
 		gallery.setOnItemSelectedListener(this);
 		linearLayout=(LinearLayout)findViewById(R.id.topbar);
 		topbarline=(LinearLayout)findViewById(R.id.topbarline);
-		reply.setOnClickListener(this);
+		queryReply.setOnClickListener(this);
 		process();
-		initMenuForTextView();
 	}
 
 	/**
@@ -163,23 +159,22 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		//从Intent中拿到用户点击的URL
 		Intent intent=getIntent();
 		if(intent!=null){
-			String url=intent.getStringExtra(Constants.BIDURLKEY);
+			url=intent.getStringExtra(Constants.BIDURLKEY);
 			String titleString=intent.getStringExtra(Constants.TITLEBAR);
 			title.setText(SmthUtils.getTitleForHtml(titleString));
-			id=SmthUtils.getIdForUrl(url);
-			//判断是否能取到正确的ID值
-			if(id!=null) {
-				Message message=Message.obtain();
-				message.what=Constants.ARTICLE;
-				message.obj=handler;
-				Bundle bundle=new Bundle();
-				bundle.putString(Constants.BIDURLKEY, url);
-				bundle.putString(Constants.IDKEY, id);
-				message.setData(bundle);
-				SmthConnectionHandlerInstance.getInstance().sendMessage(message);
-			}else {
-				showErrorDialog();
+			//先判断URL是不是从十大传过来的，如果是的话则把URL变成手机版的规范
+			if(url.indexOf("board")>-1 && url.indexOf("&")>-1) {
+				String boardName=SmthUtils.getBoardName(url);
+				String gid=SmthUtils.getGid(url);
+				url=Constants.ARTICLEURL.replaceAll("@boardName", boardName).replaceAll("@GID",gid);
 			}
+			Message message=Message.obtain();
+			message.what=Constants.ARTICLE;
+			message.obj=handler;
+			Bundle bundle=new Bundle();
+			bundle.putString(Constants.GETURLKEY, url);
+			message.setData(bundle);
+			SmthConnectionHandlerInstance.getInstance().sendMessage(message);
 		}
 	}
 	
@@ -388,44 +383,16 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		//点击查看回帖按扭
 		case R.id.reply:
 			Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
-			intent.putStringArrayListExtra(Constants.REPLYIDKEY, replyIds);
-			intent.putExtra(Constants.REPLYURLKEY, replyUrl);
+			intent.putExtra(Constants.REPLYURLKEY, url);
 			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
-			intent.putExtra(Constants.BIDKEY, bid);
 			intent.putExtra(Constants.IDKEY, id);
 			startActivity(intent);
 			finish();
 			break;
+		//点击回复
+		case R.id.re_ar:
+			
+			break;
 		}
 	}
-	
-	/**
-	 * 初始化textview的菜单选项
-	 */
-	public void initMenuForTextView(){
-		article.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
-			@Override
-			public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
-				menu.setHeaderTitle("菜单");
-				menu.add(0, 0, 0, "回复");
-			}
-		});
-	}
-
-	/**
-	 * 选中菜单ITEM后触发
-	 */
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo menuInfo;
-		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
-		i.putExtra(Constants.TITLEBAR, title.getText().toString());
-		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,id,true);
-		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
-		startActivity(i);
-		return true;
-	}
-	
-	
 }
