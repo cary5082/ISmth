@@ -48,6 +48,9 @@
     
     <TextView  android:layout_marginTop="4dp"
         	   android:layout_alignBottom="@id/reply_con"
+        	   android:layout_width="fill_parent"
+        	   android:layout_height="4dp"
+        	   android:background="@drawable/devideline_fafafa"
         	   />
     
 <!--    <LinearLayout android:id="@+id/hotitem"
