@@ -116,10 +116,20 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-		Intent intent=new Intent(getApplicationContext(),ArticleActivity.class);
+//		Intent intent=new Intent(getApplicationContext(),ArticleActivity.class);
+		Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
 		TodayHotBean thb=(TodayHotBean)parent.getItemAtPosition(position);
-		intent.putExtra(Constants.BIDURLKEY, thb.link);
+		
+		String boardName=SmthUtils.getBoardName(thb.link);
+		String gid=SmthUtils.getGid(thb.link);
+		String url=Constants.ARTICLEURL.replaceAll("@boardName", boardName).replaceAll("@GID",gid);
+		intent.putExtra(Constants.REPLYURLKEY, url);
 		intent.putExtra(Constants.TITLEBAR, thb.title);
+		url=intent.getStringExtra(Constants.REPLYURLKEY);
+		
+		
+//		intent.putExtra(Constants.BIDURLKEY, thb.link);
+//		intent.putExtra(Constants.TITLEBAR, thb.title);
 		thb=null;
 		startActivity(intent);
 	}

@@ -10,11 +10,13 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
+import com.ismth.bean.HtmlContentBean;
 import com.ismth.bean.HtmlSourceBean;
 import com.ismth.bean.TodayHotBean;
 import com.ismth.utils.ConnectionManager;
 import com.ismth.utils.Constants;
 import com.ismth.utils.HtmlParser;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 import com.ismth.utils.XmlParserInstance;
@@ -73,12 +75,8 @@ public class SmthConnectionHandlerInstance {
 			switch(msg.what) {
 			//获取十大
 			case Constants.TODAYHOT:
-				//先获取十大帖子字节流
-				conn=cm.connectionServer(Constants.TODAYHOTURL, "GET",null,null);
-				if(conn!=null){
-					//把字节流转成String字符串
-					result=SmthUtils.getStringForHttp(conn, false, null);
-				}
+				//先获取十大帖子
+				result=HtmlParser.getStringForUrl(Constants.TODAYHOTURL);
 				//如果返回流不为空，则进行XML解析拿到十大的数据
 				if(result!=null && result.length()>0) {
 					List<TodayHotBean> list=XmlParserInstance.getInstance().readTodayHotBean(result);
@@ -101,7 +99,7 @@ public class SmthConnectionHandlerInstance {
 				handler.sendMessage(message);
 				if(hsb.attUrl!=null && hsb.attUrl.size()>0) {
 					gid=SmthUtils.getGidForMobile(getUrl);
-					getAttachSource(hsb.attUrl, gid);
+//					getAttachSource(hsb.attUrl, gid);
 					Message attMessage=Message.obtain();
 					attMessage.what=Constants.CONNECTIONATTACH;
 					attMessage.arg1=Integer.valueOf(gid);
@@ -114,6 +112,17 @@ public class SmthConnectionHandlerInstance {
 				message.what=Constants.CONNECTIONSUCCESS;
 				message.obj=hsb;
 				handler.sendMessage(message);
+				if(hsb.list!=null && hsb.list.size()>0) {
+					for(HtmlContentBean hcb:hsb.list) {
+						if(hcb.attUrl!=null && hcb.attUrl.size()>0) {
+							getAttachSource(hcb.attUrl);
+							Message attMessage=Message.obtain();
+							attMessage.what=Constants.CONNECTIONATTACH;
+							attMessage.obj=hcb.attUrl;
+							handler.sendMessage(attMessage);
+						}
+					}
+				}
 				break;
 			//发表和回复帖子给服务器
 			case Constants.SENDARTICLE:
@@ -123,18 +132,6 @@ public class SmthConnectionHandlerInstance {
 				message.obj=isSuccess;
 				message.what=Constants.CONNECTIONSUCCESS;
 				handler.sendMessage(message);
-				
-//				bundle=msg.getData();
-//				String sendUrl=bundle.getString(Constants.SENDARTICLEURLKEY);
-//				conn=cm.connectionServer(sendUrl, "POST", content,titleString);
-//				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
-//				//通过返回的数据中有没有发文成功的字样，来判断发文是否成功。
-//				if(result.indexOf("发文成功")>-1) {
-//					message.what=Constants.CONNECTIONSUCCESS;
-//				}else {
-//					message.what=Constants.CONNECTIONERROR;
-//				}
-//				handler.sendMessage(message);
 				break;
 			//搜索版块
 			case Constants.SEARCHBOARD:
@@ -213,25 +210,22 @@ public class SmthConnectionHandlerInstance {
 	 * @param attUrl 下载地址
 	 * @param id 帖子主ID
 	 */
-	public void getAttachSource(List<String> attUrl,String id) {
+	public void getAttachSource(List<String> attUrl) {
 		SmthInstance instance=SmthInstance.getInstance();
-		//根据帖子的ID看看附件数据是否有缓存到本地
-		boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));
-		ArrayList<byte[]> linked=new ArrayList<byte[]>();
 		try {
-			if(!cacheFlag) {
-				for(String url:attUrl) {
-					byte[] temp=HtmlParser.getAttSourceByUrl(url);
+			for(String url:attUrl) {
+				//根据帖子的ID看看附件数据是否有缓存到本地
+				boolean cacheFlag=instance.containsKeyForPicMap(url);
+				if(!cacheFlag) {
+					byte[] temp=HtmlParser.getByteForUrl(url);
 					if(temp!=null && temp.length>0) {
-						linked.add(temp);
+						instance.addItemToPicMap(url,temp);
 					}
 				}
-				instance.addItemToPicMap(Integer.valueOf(id), linked);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		linked=null;
 	}
 	
 }

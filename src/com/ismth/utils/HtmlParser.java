@@ -97,7 +97,8 @@ public class HtmlParser {
 			Elements els3=doc.select("ul.list.sec");
 			Elements temp_els4=els3.select("li");
 			if(temp_els4.size()>1) {
-				List<Element> els4=temp_els4.subList(2, temp_els4.size());
+//				List<Element> els4=temp_els4.subList(2, temp_els4.size());
+				List<Element> els4=temp_els4.subList(1, temp_els4.size());
 				List<HtmlContentBean> hcbList=new ArrayList<HtmlContentBean>();
 				for(Element el:els4) {
 					HtmlContentBean hcb=new HtmlContentBean();
@@ -111,6 +112,16 @@ public class HtmlParser {
 					}
 					//获取回复内容
 					Elements els5=el.select("div.sp");
+					//获取附件的URL
+					Elements els6=els5.select("a[href]");
+					List<String> attList=new ArrayList<String>();
+					for(Element el2:els6) {
+						String tempUrl=el2.attr("href");
+						if(tempUrl.indexOf("att")>-1) {
+							attList.add(tempUrl);
+						}
+					}
+					hcb.attUrl=attList;
 					hcb.content=els5.html();
 					hcbList.add(hcb);
 					hcb=null;
@@ -180,7 +191,7 @@ public class HtmlParser {
 		boolean result=true;
 		try {
 			Connection conn=getConnection(url);
-			conn.data("subject",title).data("content",content).method(Method.POST);
+			conn.timeout(Constants.CONNECTIONTIMEOUT).data("subject",title).data("content",content).method(Method.POST);
 			Response response=conn.execute();
 			Document doc=response.parse();
 			Elements els=doc.select("#m_main");
@@ -200,15 +211,33 @@ public class HtmlParser {
 	 * @param url
 	 * @return
 	 */
-	public static byte[] getAttSourceByUrl(String url) {
+	public static byte[] getByteForUrl(String url) {
 		byte[] bytearray=null;
 		try {
 			Connection conn=getConnection(url);
+			conn.timeout(Constants.CONNECTIONTIMEOUT);
 			Response response=conn.execute();
 			bytearray=response.bodyAsBytes();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return bytearray;
+	}
+	
+	/**
+	 * 根据URL获取网页源码
+	 * @param url
+	 * @return
+	 */
+	public static String getStringForUrl(String url){
+		String result="";
+		try {
+			Connection conn=getConnection(url);
+			Response response=conn.execute();
+			result=response.body();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

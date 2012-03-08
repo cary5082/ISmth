@@ -17,7 +17,10 @@ public class SmthInstance {
 	private volatile static SmthInstance instance=null;
 	
 	//缓存附件的内容，KEY为贴子的ID，ARRAYLIST里放在是图片
-	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
+//	private ConcurrentHashMap<Integer,ArrayList<byte[]>> picMap=new ConcurrentHashMap<Integer,ArrayList<byte[]>>();
+	
+	private ConcurrentHashMap<String,byte[]> picMap=new ConcurrentHashMap<String,byte[]>();
+	
 	//把登录成功后的COOKIE记录放到此变量中
 	private String cookieValue="";
 	
@@ -47,7 +50,7 @@ public class SmthInstance {
 		return instance;
 	}
 	
-	public ConcurrentHashMap<Integer,ArrayList<byte[]>> getConHashMap(){
+	public ConcurrentHashMap<String,byte[]> getConHashMap(){
 		return picMap;
 	}
 	
@@ -60,25 +63,11 @@ public class SmthInstance {
 	}
 	
 	/**
-	 * 根据key取出相应对的VALUE，把VALUE长度返回
-	 * @param key
-	 * @return
-	 */
-	public int getPicMapValueSize(int key) {
-		int size=0;
-		ArrayList<byte[]> list=picMap.get(key);
-		if(list!=null) {
-			size=list.size();
-		}
-		return size;
-	}
-	
-	/**
 	 * 根据KEY从picmap中得到VALUE
 	 * @param key picmap中的key
 	 * @return
 	 */
-	public ArrayList<byte[]> getPicMapValue(int key) {
+	public byte[] getPicMapValue(String key) {
 		return picMap.get(key);
 	}
 	
@@ -87,7 +76,7 @@ public class SmthInstance {
 	 * @param key 
 	 * @param value
 	 */
-	public void addItemToPicMap(int key,ArrayList<byte[]> value) {
+	public void addItemToPicMap(String key,byte[] value) {
 		picMap.put(key, value);
 	}
 	
@@ -96,7 +85,7 @@ public class SmthInstance {
 	 * @param key
 	 * @return
 	 */
-	public boolean containsKeyForPicMap(int key) {
+	public boolean containsKeyForPicMap(String key) {
 		return picMap.containsKey(key);
 	}
 	

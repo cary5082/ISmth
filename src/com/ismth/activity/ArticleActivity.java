@@ -15,12 +15,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -42,7 +39,6 @@ import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.BitmapUtils;
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthInstance;
 import com.ismth.utils.SmthUtils;
 
@@ -201,35 +197,35 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
      * @param articleId
      */
     public void showGalleryPic(int articleId) {
-    	SmthInstance instance=SmthInstance.getInstance();
-    	ArrayList<byte[]> list=instance.getPicMapValue(articleId);
-    	try {
-    		if(adapter!=null){
-        		adapter.setArticleId(articleId);
-        		if(list!=null) {
-        			byte[] bytearray=null;
-        			Bitmap bm=null;
-        			int i=0;
-        			for(Iterator it=list.iterator();it.hasNext();) {
-        				if(i<Constants.GALLERYLOADNUM) {
-        					bytearray=(byte[])it.next();
-            				bm=BitmapUtils.decodeBitmap(bytearray, 200, 200);
-        				}else {
-        					break;
-        				}
-        				i++;
-        				adapter.add(bm);
-        			}
-        		}
-        		list=null;
-            	if(adapter.getCount()>0) {
-            		gallery.setVisibility(View.VISIBLE);
-            		adapter.notifyDataSetChanged();
-            	}
-        	}
-    	}catch(Exception e) {
-    		e.printStackTrace();
-    	}
+//    	SmthInstance instance=SmthInstance.getInstance();
+//    	ArrayList<byte[]> list=instance.getPicMapValue(articleId);
+//    	try {
+//    		if(adapter!=null){
+//        		adapter.setArticleId(articleId);
+//        		if(list!=null) {
+//        			byte[] bytearray=null;
+//        			Bitmap bm=null;
+//        			int i=0;
+//        			for(Iterator it=list.iterator();it.hasNext();) {
+//        				if(i<Constants.GALLERYLOADNUM) {
+//        					bytearray=(byte[])it.next();
+//            				bm=BitmapUtils.decodeBitmap(bytearray, 200, 200);
+//        				}else {
+//        					break;
+//        				}
+//        				i++;
+//        				adapter.add(bm);
+//        			}
+//        		}
+//        		list=null;
+//            	if(adapter.getCount()>0) {
+//            		gallery.setVisibility(View.VISIBLE);
+//            		adapter.notifyDataSetChanged();
+//            	}
+//        	}
+//    	}catch(Exception e) {
+//    		e.printStackTrace();
+//    	}
     }
 
     /**
@@ -252,22 +248,25 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-		SmthInstance instance=SmthInstance.getInstance();
-		int articleId=adapter.getArticleId();
-		ArrayList<byte[]> ll=instance.getPicMapValue(articleId);
-		byte[] bytearray=ll.get(position);
-		bigBitmap=BitmapUtils.Bytes2Bimap(bytearray);
-		BitmapDrawable bd= new BitmapDrawable(ArticleActivity.this.getResources(), bigBitmap);
-		showBigPicFlag=true;
-		loadlayout.setVisibility(View.VISIBLE);
-		bigPic.setBackgroundDrawable(bd);
-		bigPic.setVisibility(View.VISIBLE);
-		bigpic_layout.setVisibility(View.VISIBLE);
-		gallery.setVisibility(View.GONE);
-		article.setVisibility(View.GONE);
-		scroll.setVisibility(View.GONE);
-		linearLayout.setVisibility(View.GONE);
-		topbarline.setVisibility(View.GONE);
+//		SmthInstance instance=SmthInstance.getInstance();
+//		int articleId=adapter.getArticleId();
+//		ArrayList<byte[]> ll=instance.getPicMapValue(articleId);
+//		byte[] bytearray=ll.get(position);
+////		bigBitmap=BitmapUtils.Bytes2Bimap(bytearray);
+//		DisplayMetrics dm = new DisplayMetrics();
+//		getWindowManager().getDefaultDisplay().getMetrics(dm);
+//		bigBitmap=BitmapUtils.decodeBitmap(bytearray, dm.widthPixels,dm.heightPixels);
+//		BitmapDrawable bd= new BitmapDrawable(ArticleActivity.this.getResources(), bigBitmap);
+//		showBigPicFlag=true;
+//		loadlayout.setVisibility(View.VISIBLE);
+//		bigPic.setBackgroundDrawable(bd);
+//		bigPic.setVisibility(View.VISIBLE);
+//		bigpic_layout.setVisibility(View.VISIBLE);
+//		gallery.setVisibility(View.GONE);
+//		article.setVisibility(View.GONE);
+//		scroll.setVisibility(View.GONE);
+//		linearLayout.setVisibility(View.GONE);
+//		topbarline.setVisibility(View.GONE);
 	}
 	
 	/**
@@ -295,32 +294,32 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 * @param direction	滑动方向
 	 */
 	public void addItemToAdapter(int articleId,int direction) {
-		SmthInstance instance=SmthInstance.getInstance();
-		int listCount=instance.getPicMapValueSize(articleId);
-    	//根据滑动方向的不同，预加载不同位置的图片
-    	if(direction==Constants.LEFTSLIPPAGE) {
-    		int tempStart=gallery.getFirstVisiblePosition()-1;
-    		if(tempStart>=0) {
-    			for(int i=0;i<=Constants.GALLERYLOADNUM;i++) {
-    				int tempPosition=tempStart-i;
-    				if(tempPosition>=0 && tempPosition<listCount) {
-    					addItemToAdapterList(tempPosition, articleId);
-    				}
-    			}
-    			adapter.notifyDataSetChanged();
-    		}
-    	}else if(direction==Constants.RIGHTSLIPPAGE) {
-        	int tempEnd=gallery.getLastVisiblePosition()+1;
-        	if(tempEnd<listCount) {
-    	    	for(int i=0;i<Constants.GALLERYLOADNUM;i++) {
-    	    		int tempPosition=tempEnd+i;
-    	    		if(tempPosition<listCount) {
-    	    			addItemToAdapterList(tempPosition,articleId);
-    	    		}
-    	    	}
-    	    	adapter.notifyDataSetChanged();
-        	}
-    	}
+//		SmthInstance instance=SmthInstance.getInstance();
+//		int listCount=instance.getPicMapValueSize(articleId);
+//    	//根据滑动方向的不同，预加载不同位置的图片
+//    	if(direction==Constants.LEFTSLIPPAGE) {
+//    		int tempStart=gallery.getFirstVisiblePosition()-1;
+//    		if(tempStart>=0) {
+//    			for(int i=0;i<=Constants.GALLERYLOADNUM;i++) {
+//    				int tempPosition=tempStart-i;
+//    				if(tempPosition>=0 && tempPosition<listCount) {
+//    					addItemToAdapterList(tempPosition, articleId);
+//    				}
+//    			}
+//    			adapter.notifyDataSetChanged();
+//    		}
+//    	}else if(direction==Constants.RIGHTSLIPPAGE) {
+//        	int tempEnd=gallery.getLastVisiblePosition()+1;
+//        	if(tempEnd<listCount) {
+//    	    	for(int i=0;i<Constants.GALLERYLOADNUM;i++) {
+//    	    		int tempPosition=tempEnd+i;
+//    	    		if(tempPosition<listCount) {
+//    	    			addItemToAdapterList(tempPosition,articleId);
+//    	    		}
+//    	    	}
+//    	    	adapter.notifyDataSetChanged();
+//        	}
+//    	}
 	}
 	
 	/**
@@ -329,17 +328,17 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	 * @param articleId	缓存中的key
 	 */
 	public void addItemToAdapterList(int position,int articleId) {
-		SmthInstance instance=SmthInstance.getInstance();
-		ArrayList<byte[]> list=instance.getPicMapValue(articleId);
-		Object o=adapter.getItem(position);
-		Bitmap bm=null;
-		if(o==null) {
-			byte[] array=list.get(position);
-    		bm=BitmapUtils.decodeBitmap(array, 200, 200);
-    		adapter.add(bm,position);
-    		bm=null;
-		}
-		o=null;
+//		SmthInstance instance=SmthInstance.getInstance();
+//		ArrayList<byte[]> list=instance.getPicMapValue(articleId);
+//		Object o=adapter.getItem(position);
+//		Bitmap bm=null;
+//		if(o==null) {
+//			byte[] array=list.get(position);
+//    		bm=BitmapUtils.decodeBitmap(array, 200, 200);
+//    		adapter.add(bm,position);
+//    		bm=null;
+//		}
+//		o=null;
 	}
 
 	

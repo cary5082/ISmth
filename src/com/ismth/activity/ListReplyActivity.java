@@ -1,6 +1,6 @@
 package com.ismth.activity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,7 +31,6 @@ import com.ismth.adapter.ListReplyAdapter;
 import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.Constants;
-import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthUtils;
 
 /**
@@ -78,6 +77,10 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 				}else {	//提示用户获取数据失败
 					showErrorDialog();
 				}
+				break;
+			case Constants.CONNECTIONATTACH:
+				List<String> attUrl=(List<String>)msg.obj;
+				adapter.notifyAttAdapter(attUrl);
 				break;
 			}
 		}
@@ -212,5 +215,4 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 		}
 		return true;
 	}
-	
 }
