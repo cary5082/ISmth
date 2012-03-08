@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.ismth.activity.R;
 import com.ismth.bean.HtmlContentBean;
+import com.ismth.utils.Constants;
+import com.ismth.utils.ISmthLog;
 
 public class ListReplyAdapter extends BaseAdapter{
 
@@ -55,7 +57,12 @@ public class ListReplyAdapter extends BaseAdapter{
 		list=null;
 	}
 	
-	public String getReplyUrl(int position) {
+	/**
+	 * 点击用户的点击位置获取回贴URL
+	 * @param position
+	 * @return
+	 */
+	public String getLinkUrl(int position) {
 		HtmlContentBean hcb=listReply.get(position);
 		return hcb.replyUrl;
 	}

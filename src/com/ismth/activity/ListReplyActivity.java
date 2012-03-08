@@ -200,7 +200,7 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo menuInfo;
 		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		String replyUrl=adapter.getReplyUrl(menuInfo.position);
+		String replyUrl=adapter.getLinkUrl(menuInfo.position);
 		//说明登陆成功,进行回帖页面.否则提示用户未登陆或者登陆失败
 		if(replyUrl!=null && replyUrl.length()>0) {
 			Intent intent=new Intent(getApplicationContext(),ReplyArticleActivity.class);
