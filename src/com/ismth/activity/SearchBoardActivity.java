@@ -143,7 +143,9 @@ public class SearchBoardActivity extends Activity implements View.OnClickListene
 				dialog.dismiss();
 			}
 		});
-    	builder.create().show();
+    	if(this!=null && !this.isFinishing()) {
+    		builder.create().show();
+    	}
     }
 
 	@Override

@@ -66,6 +66,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	//是否正在显示大图标志位，TRUE为正在显示
 	boolean showBigPicFlag=false;
 	private TextView title;
+	HtmlSourceBean hsb;
 	Bitmap bigBitmap;
 	//大图
 	ImageView bigPic;
@@ -77,8 +78,6 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 	LinearLayout topbarline;
 	
 	TextView queryReply;
-	//主帖子ID
-	String id;
 	String url;
 	
 	
@@ -88,7 +87,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			SmthUtils.hideLoadingDialog(loadlayout, loadMsg, loadquan);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
-				HtmlSourceBean hsb=(HtmlSourceBean)msg.obj;
+				hsb=(HtmlSourceBean)msg.obj;
 				if(hsb.mainArticle!=null && hsb.mainArticle.length()>0) {
 					//如果贴子有附件重新定义scrollview的高
 					if(hsb.attUrl!=null && hsb.attUrl.size()>0) {
@@ -142,6 +141,7 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 		adapter=new GalleryAdapter(getApplicationContext());
 		gallery.setAdapter(adapter);
 		reply=(TextView)findViewById(R.id.re_ar);
+		reply.setOnClickListener(this);
 		//设置图片边距
 		gallery.setSpacing(15);
 		gallery.setOnItemClickListener(this);
@@ -191,7 +191,9 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 				dialog.dismiss();
 			}
 		});
-    	builder.create().show();
+    	if(this!=null && !this.isFinishing()) {
+    		builder.create().show();
+    	}
     }
     
     /**
@@ -385,13 +387,15 @@ public class ArticleActivity extends Activity implements OnItemClickListener,OnI
 			Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
 			intent.putExtra(Constants.REPLYURLKEY, url);
 			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
-			intent.putExtra(Constants.IDKEY, id);
 			startActivity(intent);
 			finish();
 			break;
 		//点击回复
 		case R.id.re_ar:
-			
+			Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+			i.putExtra(Constants.SENDTITLEKEY, "RE:"+title.getText().toString());
+			i.putExtra(Constants.SENDARTICLEURLKEY, Constants.MOBILEURL+hsb.replyMainUrl);
+			startActivity(i);
 			break;
 		}
 	}

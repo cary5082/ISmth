@@ -95,14 +95,23 @@ public class HtmlParser {
 				}
 			}
 			Elements els3=doc.select("ul.list.sec");
-			Elements els4=els3.select("div.sp");
-			if(els4.size()>0) {
-				//把第一篇的主帖去除
-				List<Element> list=els4.subList(1, els4.size());
+			Elements temp_els4=els3.select("li");
+			if(temp_els4.size()>1) {
+				List<Element> els4=temp_els4.subList(2, temp_els4.size());
 				List<HtmlContentBean> hcbList=new ArrayList<HtmlContentBean>();
-				for(Element el:list) {
+				for(Element el:els4) {
 					HtmlContentBean hcb=new HtmlContentBean();
-					hcb.content=el.html();
+					//获取回复帖子的URL
+					Elements replys=el.select("div.nav.hl");
+					Elements re=replys.select("a[href]");
+					for(Element e:re) {
+						if("回复".equals(e.text())) {
+							hcb.replyUrl=e.attr("href");
+						}
+					}
+					//获取回复内容
+					Elements els5=el.select("div.sp");
+					hcb.content=els5.html();
 					hcbList.add(hcb);
 					hcb=null;
 				}
@@ -158,5 +167,48 @@ public class HtmlParser {
 			}
 		}
 		return conn;
+	}
+	
+	/**
+	 * 发帖子给服务器.
+	 * @param url 发帖子的URL
+	 * @param title 帖子标题
+	 * @param content 帖子内容
+	 * @return rturn代表成功,false代表失败
+	 */
+	public static boolean postArticleToServer(String url,String title,String content) {
+		boolean result=true;
+		try {
+			Connection conn=getConnection(url);
+			conn.data("subject",title).data("content",content).method(Method.POST);
+			Response response=conn.execute();
+			Document doc=response.parse();
+			Elements els=doc.select("#m_main");
+			Elements els2=els.select("div.f");
+			if(!"发表成功".equals(els2.text())) {
+				result=false;
+			}
+		}catch(Exception e) {
+			result=false;
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据URL读取附件内容
+	 * @param url
+	 * @return
+	 */
+	public static byte[] getAttSourceByUrl(String url) {
+		byte[] bytearray=null;
+		try {
+			Connection conn=getConnection(url);
+			Response response=conn.execute();
+			bytearray=response.bodyAsBytes();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return bytearray;
 	}
 }

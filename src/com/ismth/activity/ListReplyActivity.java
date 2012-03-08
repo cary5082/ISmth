@@ -51,7 +51,6 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	String url;
 	String titleString;
 	ListReplyAdapter adapter;
-	String id;
 	//下一页
 	TextView nextpage;
 	//上一页
@@ -97,7 +96,6 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
         if(intent!=null) {
         	url=intent.getStringExtra(Constants.REPLYURLKEY);
         	titleString=intent.getStringExtra(Constants.TITLEBAR);
-        	id=intent.getStringExtra(Constants.IDKEY);
         }
         title=(TextView)findViewById(R.id.title);
         title.setText(titleString);
@@ -164,7 +162,9 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 				finish();
 			}
 		});
-    	builder.create().show();
+    	if(this!=null && !this.isFinishing()) {
+    		builder.create().show();
+    	}
     }
 	
     /**
@@ -198,13 +198,18 @@ public class ListReplyActivity extends Activity implements OnItemClickListener,a
 	 */
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-//		AdapterView.AdapterContextMenuInfo menuInfo;
-//		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-//		Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
-//		i.putExtra(Constants.TITLEBAR, titleString);
-//		replyUrl=SmthUtils.getReplyArticleUrl(replyUrl,replyIds.get(menuInfo.position),true);
-//		i.putExtra(Constants.SENDARTICLEURLKEY,replyUrl);
-//		startActivity(i);
+		AdapterView.AdapterContextMenuInfo menuInfo;
+		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		String replyUrl=adapter.getReplyUrl(menuInfo.position);
+		//说明登陆成功,进行回帖页面.否则提示用户未登陆或者登陆失败
+		if(replyUrl!=null && replyUrl.length()>0) {
+			Intent intent=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+			intent.putExtra(Constants.SENDTITLEKEY, "RE:"+titleString);
+			intent.putExtra(Constants.SENDARTICLEURLKEY, Constants.MOBILEURL+replyUrl);
+			startActivity(intent);
+		}else {
+			SmthUtils.showToast(getApplicationContext(),"当前处于未登陆,不可回复!");
+		}
 		return true;
 	}
 	

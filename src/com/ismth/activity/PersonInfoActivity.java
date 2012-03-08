@@ -76,7 +76,9 @@ public class PersonInfoActivity extends Activity{
 				finish();
 			}
 		});
-		builder.create().show();
+		if(this!=null && !this.isFinishing()) {
+			builder.create().show();
+		}
 	}
 
 	/**

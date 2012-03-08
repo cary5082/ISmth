@@ -38,10 +38,12 @@ public class ReplyArticleActivity extends Activity implements OnClickListener{
 		public void handleMessage(Message msg) {
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
-				SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文成功!");
-				break;
-			case Constants.CONNECTIONERROR:
-				SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文失败!");
+				boolean result=(Boolean)msg.obj;
+				if(result) {
+					SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文成功!");
+				}else {
+					SmthUtils.showToast(ReplyArticleActivity.this.getApplicationContext(), "发文失败!");
+				}
 				break;
 			}
 		}
@@ -55,11 +57,11 @@ public class ReplyArticleActivity extends Activity implements OnClickListener{
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.titlebar);
 		Intent intent=getIntent();
 		if(intent!=null) {
-			titleString=intent.getStringExtra(Constants.TITLEBAR);
+			titleString=intent.getStringExtra(Constants.SENDTITLEKEY);
 			sendUrl=intent.getStringExtra(Constants.SENDARTICLEURLKEY);
 		}
 		title=(TextView)findViewById(R.id.title);
-		titleString="RE:"+titleString;
+		titleString=titleString;
         title.setText(titleString);
         replyArticle=(EditText)findViewById(R.id.reply_article);
         addReply=(Button)findViewById(R.id.add_reply_article);
@@ -72,15 +74,10 @@ public class ReplyArticleActivity extends Activity implements OnClickListener{
 		switch(v.getId()) {
 		//点击发表回复的帖子
 		case R.id.add_reply_article:
-			String cookieValue="";
 			addReply.setVisibility(View.GONE);
 			replyArticle.setVisibility(View.GONE);
 			fbz.setVisibility(View.VISIBLE);
-			if(cookieValue.length()==0) {
-				fbz.setText("请先登录。");
-			}else {
-				sendReplyToServer();
-			}
+			sendReplyToServer();
 			break;
 		}
 	}
@@ -92,7 +89,7 @@ public class ReplyArticleActivity extends Activity implements OnClickListener{
 		Message msg=Message.obtain();
 		Bundle data=new Bundle();
 		data.putString(Constants.ARTICLECONTENTKEY, replyArticle.getText().toString());
-		data.putString(Constants.SENDARTICLEURLKEY, sendUrl);
+		data.putString(Constants.GETURLKEY, sendUrl);
 		data.putString(Constants.SENDTITLEKEY, titleString);
 		msg.setData(data);
 		msg.obj=handler;

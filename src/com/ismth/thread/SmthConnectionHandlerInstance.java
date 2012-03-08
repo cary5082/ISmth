@@ -117,10 +117,15 @@ public class SmthConnectionHandlerInstance {
 				break;
 			//发表和回复帖子给服务器
 			case Constants.SENDARTICLE:
+				String content=bundle.getString(Constants.ARTICLECONTENTKEY);
+				String titleString=bundle.getString(Constants.SENDTITLEKEY);
+				boolean isSuccess=HtmlParser.postArticleToServer(getUrl, titleString, content);
+				message.obj=isSuccess;
+				message.what=Constants.CONNECTIONSUCCESS;
+				handler.sendMessage(message);
+				
 //				bundle=msg.getData();
 //				String sendUrl=bundle.getString(Constants.SENDARTICLEURLKEY);
-//				String content=bundle.getString(Constants.ARTICLECONTENTKEY);
-//				String titleString=bundle.getString(Constants.SENDTITLEKEY);
 //				conn=cm.connectionServer(sendUrl, "POST", content,titleString);
 //				result=SmthUtils.getStringForHttp(conn, true, "gb2312");
 //				//通过返回的数据中有没有发文成功的字样，来判断发文是否成功。
@@ -130,7 +135,7 @@ public class SmthConnectionHandlerInstance {
 //					message.what=Constants.CONNECTIONERROR;
 //				}
 //				handler.sendMessage(message);
-//				break;
+				break;
 			//搜索版块
 			case Constants.SEARCHBOARD:
 //				bundle=msg.getData();
@@ -212,18 +217,13 @@ public class SmthConnectionHandlerInstance {
 		SmthInstance instance=SmthInstance.getInstance();
 		//根据帖子的ID看看附件数据是否有缓存到本地
 		boolean cacheFlag=instance.containsKeyForPicMap(Integer.valueOf(id));
-		HttpURLConnection conn=null;
 		ArrayList<byte[]> linked=new ArrayList<byte[]>();
-		ConnectionManager cm=new ConnectionManager();
 		try {
 			if(!cacheFlag) {
 				for(String url:attUrl) {
-					conn=cm.connectionServer(url, "GET",null,null);
-					if(conn!=null) {
-						byte[] temp=SmthUtils.getByteArrayForHttp(conn);
-						if(temp!=null && temp.length>0) {
-							linked.add(temp);
-						}
+					byte[] temp=HtmlParser.getAttSourceByUrl(url);
+					if(temp!=null && temp.length>0) {
+						linked.add(temp);
 					}
 				}
 				instance.addItemToPicMap(Integer.valueOf(id), linked);
@@ -231,7 +231,6 @@ public class SmthConnectionHandlerInstance {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		cm=null;
 		linked=null;
 	}
 	

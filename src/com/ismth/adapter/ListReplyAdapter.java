@@ -55,4 +55,8 @@ public class ListReplyAdapter extends BaseAdapter{
 		list=null;
 	}
 	
+	public String getReplyUrl(int position) {
+		HtmlContentBean hcb=listReply.get(position);
+		return hcb.replyUrl;
+	}
 }

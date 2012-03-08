@@ -61,12 +61,6 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 			case Constants.CONNECTIONERROR:
 				showErrorDialog();
 				break;
-			case Constants.LOGINSUCCESSKEY:
-				SmthUtils.showToast(ISmthActivity.this.getApplicationContext(), "登录成功!");
-				break;
-			case Constants.LOGINFAILKEY:
-				SmthUtils.showToast(ISmthActivity.this.getApplicationContext(), "登录失败!");
-				break;
 			}
 		}
 	};
@@ -151,7 +145,9 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 				finish();
 			}
 		});
-    	builder.create().show();
+    	if(this!=null && !this.isFinishing()) {
+    		builder.create().show();
+    	}
     }
 
     /**
@@ -220,7 +216,9 @@ public class ISmthActivity extends Activity implements OnItemClickListener{
 				dialog.dismiss();
 			}
 		});
-    	builder.create().show();
+    	if(this!=null && !this.isFinishing()) {
+    		builder.create().show();
+    	}
 	}
 
 	/**
