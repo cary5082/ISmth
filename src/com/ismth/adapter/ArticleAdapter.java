@@ -9,16 +9,19 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.ismth.activity.R;
 import com.ismth.bean.HtmlContentBean;
 import com.ismth.utils.Constants;
 import com.ismth.utils.ISmthLog;
 
-public class ListReplyAdapter extends BaseAdapter{
+public class ArticleAdapter extends BaseAdapter implements OnItemClickListener{
 
 	private List<HtmlContentBean> listReply=new ArrayList<HtmlContentBean>();
 	private Context context;
@@ -26,7 +29,7 @@ public class ListReplyAdapter extends BaseAdapter{
 	private Gallery gallery;
 	private HashMap<Integer,ArticleAttAdapter> map;
 	
-	public ListReplyAdapter(Context context) {
+	public ArticleAdapter(Context context) {
 		this.context=context;
 	}
 	
@@ -47,7 +50,7 @@ public class ListReplyAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		convertView=LayoutInflater.from(context).inflate(R.layout.reply_item, null);
+		convertView=LayoutInflater.from(context).inflate(R.layout.article_item, null);
 		HtmlContentBean hcb=listReply.get(position);
 		content=(TextView)convertView.findViewById(R.id.reply_con);
 		//判断当前帖子是否有附件显示，如果有的话，初始化gallery
@@ -63,6 +66,7 @@ public class ListReplyAdapter extends BaseAdapter{
 				map.put(hcb.attUrl.hashCode(), attAdapter);
 			}
 			gallery.setAdapter(attAdapter);
+			gallery.setOnItemClickListener(this);
 			gallery.setVisibility(View.VISIBLE);
 			
 		}
@@ -105,5 +109,9 @@ public class ListReplyAdapter extends BaseAdapter{
 			e.printStackTrace();
 		}
 	}
-	
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+		
+	}
 }

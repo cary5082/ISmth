@@ -91,21 +91,6 @@ public class SmthConnectionHandlerInstance {
 				//把结果返回activity
 				handler.sendMessage(message);
 				break;
-				//获取单篇文章
-			case Constants.ARTICLE:
-				hsb=HtmlParser.getMainArticle(getUrl);
-				message.what=Constants.CONNECTIONSUCCESS;
-				message.obj=hsb;
-				handler.sendMessage(message);
-				if(hsb.attUrl!=null && hsb.attUrl.size()>0) {
-					gid=SmthUtils.getGidForMobile(getUrl);
-//					getAttachSource(hsb.attUrl, gid);
-					Message attMessage=Message.obtain();
-					attMessage.what=Constants.CONNECTIONATTACH;
-					attMessage.arg1=Integer.valueOf(gid);
-					handler.sendMessage(attMessage);
-				}
-				break;
 			//获取回帖
 			case Constants.LISTREPLY:
 				hsb=HtmlParser.getListReply(getUrl);
@@ -190,7 +175,6 @@ public class SmthConnectionHandlerInstance {
 	 */
 	public void removeBeforeMessage() {
 		myHandler.removeMessages(Constants.TODAYHOT);
-		myHandler.removeMessages(Constants.ARTICLE);
 		myHandler.removeMessages(Constants.LISTREPLY);
 	}
 	
@@ -201,7 +185,6 @@ public class SmthConnectionHandlerInstance {
 	public boolean hasMessageInQueue(){
 		boolean result=false;
 		result=myHandler.hasMessages(Constants.TODAYHOT);
-		result=myHandler.hasMessages(Constants.ARTICLE);
 		return result;
 	}
 	

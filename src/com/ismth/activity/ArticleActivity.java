@@ -1,7 +1,6 @@
 package com.ismth.activity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,393 +8,213 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ismth.adapter.GalleryAdapter;
+import com.ismth.adapter.ArticleAdapter;
 import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
-import com.ismth.utils.BitmapUtils;
 import com.ismth.utils.Constants;
-import com.ismth.utils.SmthInstance;
+import com.ismth.utils.ISmthLog;
 import com.ismth.utils.SmthUtils;
 
 /**
- * 单篇文章阅读
- *@Time:2012-2-13
- *@Author:wangjianfei
- *@Version:
+ * 查看回贴
+ *2012-2-25 上午11:32:26
+ *author:cary
  */
-public class ArticleActivity extends Activity implements OnItemClickListener,OnItemSelectedListener,View.OnClickListener{
+public class ArticleActivity extends Activity implements OnItemClickListener,android.view.View.OnClickListener{
 
-	TextView article;
-	private RelativeLayout loadlayout; 
-	private RelativeLayout bigpic_layout;
-	private ImageView loadquan; 
-	private TextView loadMsg; 
-	private Animation rotateAnimation;
-	GalleryAdapter adapter;
-	TextView reply;
-	Gallery gallery;
-	//是否正在显示大图标志位，TRUE为正在显示
-	boolean showBigPicFlag=false;
+	private RelativeLayout quanquanLayout; 
+	private ImageView quanquan; 
+	private TextView quanMsg; 
+	private Animation rotateAnimation; 
+	private ListView listView;
 	private TextView title;
-	HtmlSourceBean hsb;
-	Bitmap bigBitmap;
-	//大图
-	ImageView bigPic;
-	
-	ScrollView scroll;
-	
-	LinearLayout linearLayout;
-	
-	LinearLayout topbarline;
-	
-	TextView queryReply;
+	//获取帖子的URL;
 	String url;
-	
+	String titleString;
+	ArticleAdapter adapter;
+	//下一页
+	TextView nextpage;
+	//上一页
+	TextView prepage;
+	HtmlSourceBean hsb;
 	
 	public Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			SmthUtils.hideLoadingDialog(loadlayout, loadMsg, loadquan);
+			SmthUtils.hideLoadingDialog(quanquanLayout, quanMsg, quanquan);
+			listView.setVisibility(View.VISIBLE);
 			switch(msg.what) {
 			case Constants.CONNECTIONSUCCESS:
 				hsb=(HtmlSourceBean)msg.obj;
-				if(hsb.mainArticle!=null && hsb.mainArticle.length()>0) {
-					//如果贴子有附件重新定义scrollview的高
-					if(hsb.attUrl!=null && hsb.attUrl.size()>0) {
-						WindowManager wm = (WindowManager)ArticleActivity.this.getSystemService(ArticleActivity.this.WINDOW_SERVICE);
-						int height = wm.getDefaultDisplay().getHeight();//屏幕高度
-						//如果有附件把scrollView高度设为屏幕高度一半
-						scroll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,height/2));
-						//如果有附件显示正在加载附件对话框
-						SmthUtils.showLoadingDialog(loadlayout,loadquan, loadMsg, rotateAnimation, "正在加载附件.....");
+				//说明获取数据正确
+				if(hsb.list!=null && hsb.list.size()>0) {
+					if(hsb.nextpageLink.length() > 0) {
+						nextpage.setVisibility(View.VISIBLE);
 					}
-					article.setText(Html.fromHtml(hsb.mainArticle));
-				}else {
+					if(hsb.prepageLink.length() >0) {
+						prepage.setVisibility(View.VISIBLE);
+					}
+					adapter.setListReply(hsb.list);
+					adapter.notifyDataSetChanged();
+				}else {	//提示用户获取数据失败
 					showErrorDialog();
-				}
-				if(hsb.isReply) {
-					queryReply.setVisibility(View.VISIBLE);
-				}
-				if(hsb.replyMainUrl!=null && hsb.replyMainUrl.length()>0) {
-					reply.setVisibility(View.VISIBLE);
 				}
 				break;
 			case Constants.CONNECTIONATTACH:
-				int articleId=(Integer)msg.arg1;
-				showGalleryPic(articleId);
+				List<String> attUrl=(List<String>)msg.obj;
+				adapter.notifyAttAdapter(attUrl);
 				break;
 			}
 		}
 	};
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//必须放在super之后第一行的位置
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); 
 		setContentView(R.layout.article);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.titlebar);
-		//加载框
-		loadMsg = (TextView) findViewById(R.id.loadMsg);
-		loadlayout = (RelativeLayout) findViewById(R.id.loadlayout);
-		loadquan = (ImageView) findViewById(R.id.loadquan);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.titlebar);
+        //获取上入页面跳转过来通过intent传入的值
+        Intent intent=getIntent();
+        if(intent!=null) {
+        	url=intent.getStringExtra(Constants.REPLYURLKEY);
+//        	url="http://m.newsmth.net/article/MyPhoto/1792262";
+        	titleString=intent.getStringExtra(Constants.TITLEBAR);
+        }
+        title=(TextView)findViewById(R.id.title);
+        title.setText(titleString);
+        //加载框
+        quanMsg = (TextView) findViewById(R.id.quanMsg);
+		quanquanLayout = (RelativeLayout) findViewById(R.id.quanquanLayout);
+		quanquan = (ImageView) findViewById(R.id.quanquan);
 		rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.quanquan);
 		rotateAnimation.setInterpolator(new LinearInterpolator());
-        
-		
-        title=(TextView)findViewById(R.id.title);
-		article=(TextView)findViewById(R.id.article);
-		gallery=(Gallery)findViewById(R.id.gallery);
-		scroll=(ScrollView)findViewById(R.id.scroll);
-		bigPic=(ImageView)findViewById(R.id.bigpic);
-		bigpic_layout=(RelativeLayout)findViewById(R.id.bigpic_layout);
-		queryReply=(TextView)findViewById(R.id.reply);
-		adapter=new GalleryAdapter(getApplicationContext());
-		gallery.setAdapter(adapter);
-		reply=(TextView)findViewById(R.id.re_ar);
-		reply.setOnClickListener(this);
-		//设置图片边距
-		gallery.setSpacing(15);
-		gallery.setOnItemClickListener(this);
-		gallery.setOnItemSelectedListener(this);
-		linearLayout=(LinearLayout)findViewById(R.id.topbar);
-		topbarline=(LinearLayout)findViewById(R.id.topbarline);
-		queryReply.setOnClickListener(this);
-		process();
+		listView=(ListView)findViewById(R.id.list_reply);
+		nextpage=(TextView)findViewById(R.id.nextpage);
+		prepage=(TextView)findViewById(R.id.prepage);
+		listView.setOnItemClickListener(this);
+		adapter=new ArticleAdapter(getApplicationContext());
+		listView.setAdapter(adapter);
+		nextpage.setOnClickListener(this);
+		prepage.setOnClickListener(this);
+		startProcess();
+		initMenuForListView();
 	}
 
 	/**
-	 * 开始业务的处理
+	 * 开始具体的业务处理
 	 */
-	public void process(){
-		//从Intent中拿到用户点击的URL
-		Intent intent=getIntent();
-		if(intent!=null){
-			url=intent.getStringExtra(Constants.BIDURLKEY);
-			String titleString=intent.getStringExtra(Constants.TITLEBAR);
-			title.setText(SmthUtils.getTitleForHtml(titleString));
-			//先判断URL是不是从十大传过来的，如果是的话则把URL变成手机版的规范
-			if(url.indexOf("board")>-1 && url.indexOf("&")>-1) {
-				String boardName=SmthUtils.getBoardName(url);
-				String gid=SmthUtils.getGid(url);
-				url=Constants.ARTICLEURL.replaceAll("@boardName", boardName).replaceAll("@GID",gid);
-			}
-			Message message=Message.obtain();
-			message.what=Constants.ARTICLE;
-			message.obj=handler;
-			Bundle bundle=new Bundle();
-			bundle.putString(Constants.GETURLKEY, url);
-			message.setData(bundle);
-			SmthConnectionHandlerInstance.getInstance().sendMessage(message);
-		}
+	public void startProcess() {
+		nextpage.setVisibility(View.INVISIBLE);
+		prepage.setVisibility(View.INVISIBLE);
+		listView.setVisibility(View.GONE);
+		SmthUtils.showLoadingDialog(quanquanLayout,quanquan,quanMsg,rotateAnimation,"正在载入.....");
+		Message msg=Message.obtain();
+		Bundle data=new Bundle();
+		data.putString(Constants.GETURLKEY, url);
+		msg.setData(data);
+		msg.what=Constants.LISTREPLY;
+		//handler用于回调
+		msg.obj=handler;
+		SmthConnectionHandlerInstance.getInstance().sendMessage(msg);
 	}
 	
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
+		
+	}
+
 	/**
 	 * 显示加载出错对话框
 	 */
     public void showErrorDialog(){
     	AlertDialog.Builder builder=new Builder(this);
-    	builder.setMessage("文章加载出错。");
+    	builder.setMessage("网络加载出错。");
     	builder.setTitle("温馨提示：");
-    	builder.setNegativeButton("确定", new OnClickListener() {
+    	builder.setPositiveButton("重试", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
+				startProcess();
+			}
+		});
+    	builder.setNegativeButton("返回", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				finish();
 			}
 		});
     	if(this!=null && !this.isFinishing()) {
     		builder.create().show();
     	}
     }
-    
+	
     /**
-     * 显示gallery里的图片
-     * @param articleId
+     * 初始化listview长按的menu选项
      */
-    public void showGalleryPic(int articleId) {
-//    	SmthInstance instance=SmthInstance.getInstance();
-//    	ArrayList<byte[]> list=instance.getPicMapValue(articleId);
-//    	try {
-//    		if(adapter!=null){
-//        		adapter.setArticleId(articleId);
-//        		if(list!=null) {
-//        			byte[] bytearray=null;
-//        			Bitmap bm=null;
-//        			int i=0;
-//        			for(Iterator it=list.iterator();it.hasNext();) {
-//        				if(i<Constants.GALLERYLOADNUM) {
-//        					bytearray=(byte[])it.next();
-//            				bm=BitmapUtils.decodeBitmap(bytearray, 200, 200);
-//        				}else {
-//        					break;
-//        				}
-//        				i++;
-//        				adapter.add(bm);
-//        			}
-//        		}
-//        		list=null;
-//            	if(adapter.getCount()>0) {
-//            		gallery.setVisibility(View.VISIBLE);
-//            		adapter.notifyDataSetChanged();
-//            	}
-//        	}
-//    	}catch(Exception e) {
-//    		e.printStackTrace();
-//    	}
+    public void initMenuForListView(){
+    	listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener(){
+			@Override
+			public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
+				menu.setHeaderTitle("菜单");
+				menu.add(0, 0, 0, "回复");
+			}
+    	});
     }
 
-    /**
-     * gallery选中的图片
-     */
-	@Override
-	public void onItemSelected(AdapterView<?> adapterView, View view, int position,long id) {
-		int articleId=adapter.getArticleId();
-		int direction=adapter.leftOrRightSlippage(position);
-		releaseBitmapForGallery(direction);
-		addItemToAdapter(articleId,direction);
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-	}
-
-	/**
-	 * gallery单击的图片
-	 */
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-//		SmthInstance instance=SmthInstance.getInstance();
-//		int articleId=adapter.getArticleId();
-//		ArrayList<byte[]> ll=instance.getPicMapValue(articleId);
-//		byte[] bytearray=ll.get(position);
-////		bigBitmap=BitmapUtils.Bytes2Bimap(bytearray);
-//		DisplayMetrics dm = new DisplayMetrics();
-//		getWindowManager().getDefaultDisplay().getMetrics(dm);
-//		bigBitmap=BitmapUtils.decodeBitmap(bytearray, dm.widthPixels,dm.heightPixels);
-//		BitmapDrawable bd= new BitmapDrawable(ArticleActivity.this.getResources(), bigBitmap);
-//		showBigPicFlag=true;
-//		loadlayout.setVisibility(View.VISIBLE);
-//		bigPic.setBackgroundDrawable(bd);
-//		bigPic.setVisibility(View.VISIBLE);
-//		bigpic_layout.setVisibility(View.VISIBLE);
-//		gallery.setVisibility(View.GONE);
-//		article.setVisibility(View.GONE);
-//		scroll.setVisibility(View.GONE);
-//		linearLayout.setVisibility(View.GONE);
-//		topbarline.setVisibility(View.GONE);
-	}
-	
-	/**
-	 * 释放gallery里的图片资源，释放规则是可见区域的前后各5张
-	 */
-	private void releaseBitmapForGallery(int direction){
-		int start=gallery.getFirstVisiblePosition()-Constants.GALLERYLOADNUM;
-		int end=gallery.getLastVisiblePosition()+Constants.GALLERYLOADNUM;
-		int count=adapter.getCount();
-		//先把可见图片之前的释放
-		int tempStart=start-1;
-		for(int i=tempStart;i>=0;i--) {
-			adapter.releaseForList(i);
-		}
-		//把最后一张可见图片之后的图片释放
-		int tempEnd=end+1;
-		for(int i=tempEnd;i<count;i++) {
-			adapter.releaseForList(i);
-		}
-	}
-	
-	/**
-	 * 根据滑动方向的不同，预加载图片
-	 * @param articleId 附件存在缓存里的KEY
-	 * @param direction	滑动方向
-	 */
-	public void addItemToAdapter(int articleId,int direction) {
-//		SmthInstance instance=SmthInstance.getInstance();
-//		int listCount=instance.getPicMapValueSize(articleId);
-//    	//根据滑动方向的不同，预加载不同位置的图片
-//    	if(direction==Constants.LEFTSLIPPAGE) {
-//    		int tempStart=gallery.getFirstVisiblePosition()-1;
-//    		if(tempStart>=0) {
-//    			for(int i=0;i<=Constants.GALLERYLOADNUM;i++) {
-//    				int tempPosition=tempStart-i;
-//    				if(tempPosition>=0 && tempPosition<listCount) {
-//    					addItemToAdapterList(tempPosition, articleId);
-//    				}
-//    			}
-//    			adapter.notifyDataSetChanged();
-//    		}
-//    	}else if(direction==Constants.RIGHTSLIPPAGE) {
-//        	int tempEnd=gallery.getLastVisiblePosition()+1;
-//        	if(tempEnd<listCount) {
-//    	    	for(int i=0;i<Constants.GALLERYLOADNUM;i++) {
-//    	    		int tempPosition=tempEnd+i;
-//    	    		if(tempPosition<listCount) {
-//    	    			addItemToAdapterList(tempPosition,articleId);
-//    	    		}
-//    	    	}
-//    	    	adapter.notifyDataSetChanged();
-//        	}
-//    	}
-	}
-	
-	/**
-	 * 从缓存中取出图片加入到ADAPTER里的LIST中
-	 * @param position 加入的位置
-	 * @param articleId	缓存中的key
-	 */
-	public void addItemToAdapterList(int position,int articleId) {
-//		SmthInstance instance=SmthInstance.getInstance();
-//		ArrayList<byte[]> list=instance.getPicMapValue(articleId);
-//		Object o=adapter.getItem(position);
-//		Bitmap bm=null;
-//		if(o==null) {
-//			byte[] array=list.get(position);
-//    		bm=BitmapUtils.decodeBitmap(array, 200, 200);
-//    		adapter.add(bm,position);
-//    		bm=null;
-//		}
-//		o=null;
-	}
-
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		adapter.exitGallery();
-	}
-
-	/**
-	 * 监听键盘
-	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode==KeyEvent.KEYCODE_BACK) {
-			//正在显示大图，按back键此时处理为回到普通模式
-			if(showBigPicFlag) {
-				bigPic.setVisibility(View.GONE);
-				bigpic_layout.setVisibility(View.GONE);
-				article.setVisibility(View.VISIBLE);
-				gallery.setVisibility(View.VISIBLE);
-				scroll.setVisibility(View.VISIBLE);
-				linearLayout.setVisibility(View.VISIBLE);
-				topbarline.setVisibility(View.VISIBLE);
-				showBigPicFlag=false;
-				bigBitmap.recycle();
-				bigBitmap=null;
-				return true;
-			}else{
-				finish();
-				return true;
-			}
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
-	/**
-	 * 监听页面按钮事件
-	 */
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
-		//点击查看回帖按扭
-		case R.id.reply:
-			Intent intent=new Intent(getApplicationContext(),ListReplyActivity.class);
-			intent.putExtra(Constants.REPLYURLKEY, url);
-			intent.putExtra(Constants.TITLEBAR, title.getText().toString());
-			startActivity(intent);
-			finish();
+		case R.id.nextpage:
+			url=Constants.MOBILEURL+hsb.nextpageLink;
 			break;
-		//点击回复
-		case R.id.re_ar:
-			Intent i=new Intent(getApplicationContext(),ReplyArticleActivity.class);
-			i.putExtra(Constants.SENDTITLEKEY, "RE:"+title.getText().toString());
-			i.putExtra(Constants.SENDARTICLEURLKEY, Constants.MOBILEURL+hsb.replyMainUrl);
-			startActivity(i);
+		case R.id.prepage:
+			url=Constants.MOBILEURL+hsb.prepageLink;
 			break;
 		}
+		startProcess();
+	}
+
+	/**
+	 * 选中菜单ITEM后触发
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo menuInfo;
+		menuInfo=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		String replyUrl=adapter.getLinkUrl(menuInfo.position);
+		//说明登陆成功,进行回帖页面.否则提示用户未登陆或者登陆失败
+		if(replyUrl!=null && replyUrl.length()>0) {
+			Intent intent=new Intent(getApplicationContext(),ReplyArticleActivity.class);
+			intent.putExtra(Constants.SENDTITLEKEY, "RE:"+titleString);
+			intent.putExtra(Constants.SENDARTICLEURLKEY, Constants.MOBILEURL+replyUrl);
+			startActivity(intent);
+		}else {
+			SmthUtils.showToast(getApplicationContext(),"当前处于未登陆,不可回复!");
+		}
+		return true;
 	}
 }

@@ -27,7 +27,7 @@ public class Constants {
 	/** 今日十大*/
 	public static final int TODAYHOT=1;
 	/** 单篇文章*/
-	public static final int ARTICLE=2;
+//	public static final int ARTICLE=2;
 	/** 查看回帖*/
 	public static final int LISTREPLY=3;
 	/** 发送帖子内容给服务器*/

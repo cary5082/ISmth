@@ -24,57 +24,6 @@ import com.ismth.bean.HtmlSourceBean;
 public class HtmlParser {
 	
 	/**
-	 * 根据主帖URL获取内容
-	 * @param url 
-	 * @return
-	 */
-	public static HtmlSourceBean getMainArticle(String url) {
-		HtmlSourceBean hsb=new HtmlSourceBean();
-		try {
-			Connection conn=getConnection(url);
-			Document doc=conn.get();
-			Elements els=doc.select("ul.list.sec");
-			//获取回复地址
-			Elements replys=els.select("div.nav.hl");
-			if(replys.size()>0) {
-				Element r=replys.get(0);
-				Elements re=r.select("a[href]");
-				for(Element e:re) {
-					if("回复".equals(e.text())) {
-						hsb.replyMainUrl=e.attr("href");
-					}
-				}
-			}
-			Elements els2=els.select("div.sp");
-			//获取附件的URL
-			Elements els3=els2.select("a[href]");
-			List<String> attList=new ArrayList<String>();
-			for(Element el2:els3) {
-				String tempUrl=el2.attr("href");
-				if(tempUrl.indexOf("att")>-1) {
-					attList.add(tempUrl);
-				}
-			}
-			hsb.attUrl=attList;
-			if(els2.size()>0) {
-				Element el=els2.get(0);
-				int last=el.html().indexOf("<img");
-				if(last==-1) {
-					hsb.mainArticle=el.html();
-				}else {
-					hsb.mainArticle=el.html().substring(0,last);
-				}
-			}
-			if(els2.size()>1) {
-				hsb.isReply=true;
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return hsb;
-	}
-	
-	/**
 	 * 获取回复的帖子
 	 * @param url
 	 * @return
@@ -95,39 +44,42 @@ public class HtmlParser {
 				}
 			}
 			Elements els3=doc.select("ul.list.sec");
-			Elements temp_els4=els3.select("li");
-			if(temp_els4.size()>1) {
-//				List<Element> els4=temp_els4.subList(2, temp_els4.size());
-				List<Element> els4=temp_els4.subList(1, temp_els4.size());
-				List<HtmlContentBean> hcbList=new ArrayList<HtmlContentBean>();
-				for(Element el:els4) {
-					HtmlContentBean hcb=new HtmlContentBean();
-					//获取回复帖子的URL
-					Elements replys=el.select("div.nav.hl");
-					Elements re=replys.select("a[href]");
-					for(Element e:re) {
-						if("回复".equals(e.text())) {
-							hcb.replyUrl=e.attr("href");
-						}
+			Elements els4=els3.select("li");
+			List<HtmlContentBean> hcbList=new ArrayList<HtmlContentBean>();
+			for(Element el:els4) {
+				HtmlContentBean hcb=new HtmlContentBean();
+				//获取回复帖子的URL
+				Elements replys=el.select("div.nav.hl");
+				Elements re=replys.select("a[href]");
+				for(Element e:re) {
+					if("回复".equals(e.text())) {
+						hcb.replyUrl=e.attr("href");
 					}
-					//获取回复内容
-					Elements els5=el.select("div.sp");
-					//获取附件的URL
-					Elements els6=els5.select("a[href]");
-					List<String> attList=new ArrayList<String>();
-					for(Element el2:els6) {
-						String tempUrl=el2.attr("href");
-						if(tempUrl.indexOf("att")>-1) {
-							attList.add(tempUrl);
-						}
-					}
-					hcb.attUrl=attList;
-					hcb.content=els5.html();
-					hcbList.add(hcb);
-					hcb=null;
 				}
-				hsb.list=hcbList;
+				//获取回复内容
+				Elements els5=el.select("div.sp");
+				//获取附件的URL
+				Elements els6=els5.select("a[href]");
+				List<String> attList=new ArrayList<String>();
+				for(Element el2:els6) {
+					String tempUrl=el2.attr("href");
+					if(tempUrl.indexOf("att")>-1) {
+						attList.add(tempUrl);
+					}
+				}
+				hcb.attUrl=attList;
+				int last=els5.html().indexOf("<img");
+				if(last==-1) {
+					hcb.content=els5.html();
+				}else {
+					hcb.content=els5.html().substring(0,last);
+				}
+				if(hcb.content.length()>0){
+					hcbList.add(hcb);
+				}
+				hcb=null;
 			}
+			hsb.list=hcbList;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
