@@ -34,7 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ismth.adapter.GalleryAdapter;
+import com.ismth.adapter.GalleryAdapterTemp;
 import com.ismth.bean.HtmlSourceBean;
 import com.ismth.thread.SmthConnectionHandlerInstance;
 import com.ismth.utils.BitmapUtils;
@@ -56,7 +56,7 @@ public class ArticleActivityTemp extends Activity implements OnItemClickListener
 	private ImageView loadquan; 
 	private TextView loadMsg; 
 	private Animation rotateAnimation;
-	GalleryAdapter adapter;
+	GalleryAdapterTemp adapter;
 	TextView reply;
 	Gallery gallery;
 	//是否正在显示大图标志位，TRUE为正在显示
@@ -134,7 +134,7 @@ public class ArticleActivityTemp extends Activity implements OnItemClickListener
 		bigPic=(ImageView)findViewById(R.id.bigpic);
 		bigpic_layout=(RelativeLayout)findViewById(R.id.bigpic_layout);
 		queryReply=(TextView)findViewById(R.id.reply);
-		adapter=new GalleryAdapter(getApplicationContext());
+		adapter=new GalleryAdapterTemp(getApplicationContext());
 		gallery.setAdapter(adapter);
 		reply=(TextView)findViewById(R.id.re_ar);
 		reply.setOnClickListener(this);
